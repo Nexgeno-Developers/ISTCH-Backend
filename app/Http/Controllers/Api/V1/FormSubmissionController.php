@@ -170,49 +170,47 @@ class FormSubmissionController extends Controller
     private function getValidationRules(string $formName): array
     {
         switch ($formName) {
-            case 'subscription':
+            case 'volunteers_application':
                 return [
-                    'form_name' => 'required|max:20',
-                    'email' => 'required|email|max:50',
-                ];
-
-            case 'get_in_touch':
-                return [
-                    'form_name' => 'required|max:20',
+                    'form_name' => 'required|max:50',
                     'name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
+                    'phone' => 'nullable|string|max:20',
+                    'age' => 'required|integer|min:1|max:120',
+                    'country' => 'required|string|max:50',
+                    'occupation' => 'required|string|max:100',
+                    'motivation' => 'required|string|max:500',
+                    'previous_experience' => 'nullable|string|max:500',
+                    'key_skills' => 'nullable|string|max:500',
+                    'vision_for_impact' => 'nullable|string|max:500',
+                    'availability' => 'required|string|max:100',
+                ];
+                
+            case 'ambassador_application':
+                return [
+                    'form_name' => 'required|max:50',
+                    'name' => 'required|string|max:50',
+                    'email' => 'required|email|max:50',
+                    'phone' => 'nullable|string|max:20',
+                    'age' => 'required|integer|min:1|max:120',
+                    'country' => 'required|string|max:50',
+                    'occupation' => 'required|string|max:100',
+                    'motivation' => 'required|string|max:500',
+                    'previous_experience' => 'nullable|string|max:500',
+                    'key_skills' => 'nullable|string|max:500',
+                    'vision_for_impact' => 'nullable|string|max:500',
+                    'availability' => 'required|string|max:100',
                 ];
 
-            case 'message':
-                return [
-                    'form_name' => 'required|max:20',
-                    'name' => 'nullable|string|max:50',
-                    'first_name' => 'required|string|max:50',
-                    'last_name' => 'required|string|max:50',
-                    'phone' => 'nullable|digits_between:10,15|max:50',
-                    'email' => 'required|email|max:50',
-                    'message' => 'nullable|string|max:200',
-                ]; 
-                
             case 'contact':
                 return [
-                    'form_name' => 'required|max:20',
-                    'name' => 'nullable|string|max:50',
-                    'first_name' => 'required|string|max:50',
-                    'last_name' => 'required|string|max:50',
+                    'form_name' => 'required|max:50',
+                    'full_name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
-                    'phone' => 'nullable|digits_between:10,15|max:50',
-                    'company_name' => 'required|string|max:50',
-                    'company_url' => 'nullable|string|max:255',
-                    'job_function'=> 'required|string|max:50',
-                    'job_title'   => 'required|string|max:50',
-                    'country'     => 'required|string|max:50',
-                    'interests' => 'required|string|max:200',
-                    'interested_products' => 'nullable|string|max:200|required_if:interests,Products & Services',
-                    'interested_marketing_support_service' => 'nullable|string|max:200|required_if:interests,Products & Services',
-                    'interested_technical_support_service' => 'nullable|string|max:200|required_if:interests,Products & Services',
-                    'message' => 'nullable|string|max:200',
-                ];                  
+                    'country' => 'required|string|max:50',
+                    'nature_of_inquiry' => 'required|string|max:100',
+                    'message' => 'required|string|max:1000',
+                ];
 
             default:
                 return [

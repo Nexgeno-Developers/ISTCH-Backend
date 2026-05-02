@@ -26,7 +26,10 @@ class ProtectForms
         }
 
         // 🚫 2. Block known bad bots
-        $badAgents = ['curl', 'wget', 'python', 'bot', 'scrapy', 'PostmanRuntime'];
+        $badAgents = ['curl', 'wget', 'python', 'bot', 'scrapy'];
+        if (!config('custom.form_allow_postman')) {
+            $badAgents[] = 'PostmanRuntime';
+        }
         foreach ($badAgents as $bot) {
             if (stripos($userAgent, $bot) !== false) {
                 \Log::warning("Bot User-Agent '$userAgent' blocked from: $ip");
