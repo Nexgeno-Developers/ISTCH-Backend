@@ -43,6 +43,11 @@ class PageController extends Controller
         'dynamic_field',
         'hero_items',
         'info_items',
+        'testimonials',
+        'engagement_items',
+        'our_actions',
+        'core_values',
+        'highlights',
     ];
 
     /**

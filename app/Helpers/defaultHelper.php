@@ -168,6 +168,14 @@ if (!function_exists('getPageLayouts')) {
                 'label' => 'Global Movement',
                 'description' => 'Global movement page layout.',
             ],
+            'global-volunteer' => [
+                'label' => 'Global Volunteer',
+                'description' => 'Global volunteer page layout.',
+            ],
+            'peace-circle-collaboration' => [
+                'label' => 'Peace Circle Collaboration',
+                'description' => 'Peace circle collaboration page layout.',
+            ],
 
         ];
 
