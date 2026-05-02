@@ -30,17 +30,16 @@ class HomeController extends Controller
     public function success(Request $request, StripePayment $stripePayment): View
     {
         $payment = Payment::find($request->query('payment'));
-        $sessionId = $request->query('session_id');
 
-        if ($payment && $sessionId && $payment->stripe_checkout_session_id === $sessionId) {
+        if ($payment && $payment->stripe_checkout_session_id) {
             try {
-                $session = $stripePayment->retrieveCheckoutSession($sessionId);
+                $session = $stripePayment->retrieveCheckoutSession($payment->stripe_checkout_session_id);
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'frontend_success_page');
                 $payment->refresh();
             } catch (\Throwable $e) {
                 Log::warning('Unable to verify Stripe Checkout Session on frontend success page: ' . $e->getMessage(), [
                     'payment_id' => $payment->id,
-                    'session_id' => $sessionId,
+                    'session_id' => $payment->stripe_checkout_session_id,
                 ]);
             }
         }

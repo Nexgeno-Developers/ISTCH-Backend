@@ -48,7 +48,7 @@ class StripePayment
     public function createCheckoutSession(Payment $payment): Session
     {
         $amountInSmallestUnit = $this->toSmallestUnit((float) $payment->amount, $payment->currency);
-        $successUrl = route('payment.success.page', ['payment' => $payment->id]) . '&session_id={CHECKOUT_SESSION_ID}';
+        $successUrl = route('payment.success.page', ['payment' => $payment->id]);
         $cancelUrl = route('payment.cancel.page', ['payment' => $payment->id]);
 
         $lineItem = [

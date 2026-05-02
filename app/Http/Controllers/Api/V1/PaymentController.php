@@ -118,21 +118,20 @@ class PaymentController extends Controller
     public function success(Request $request, StripePayment $stripePayment): JsonResponse
     {
         $payment = Payment::find($request->query('payment'));
-        $sessionId = $request->query('session_id');
 
         if (! $payment) {
             return response()->json(['message' => 'Payment not found.'], 404);
         }
 
-        if ($sessionId && $payment->stripe_checkout_session_id === $sessionId) {
+        if ($payment->stripe_checkout_session_id) {
             try {
-                $session = $stripePayment->retrieveCheckoutSession($sessionId);
+                $session = $stripePayment->retrieveCheckoutSession($payment->stripe_checkout_session_id);
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'success_page_verified');
                 $payment->refresh();
             } catch (\Throwable $e) {
                 Log::warning('Unable to verify Stripe Checkout Session on success API: ' . $e->getMessage(), [
                     'payment_id' => $payment->id,
-                    'session_id' => $sessionId,
+                    'session_id' => $payment->stripe_checkout_session_id,
                 ]);
             }
         }
