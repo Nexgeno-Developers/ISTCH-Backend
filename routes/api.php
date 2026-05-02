@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\FormSubmissionController;
 use App\Http\Controllers\Api\V1\PageController; 
 use App\Http\Controllers\Api\V1\PostController;
+use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\AuthorController;
@@ -52,4 +54,11 @@ Route::prefix('v1')->group(function () {
 
     // robots.txt content (for frontend file generation)
     Route::get('robots-txt', [SeoSettingController::class, 'robotsTxt']);
+
+    // Payments
+    Route::get('payments/currencies', [PaymentController::class, 'currencies']);
+    Route::post('donate', [PaymentController::class, 'donate'])->middleware('throttle:10,1')->name('donation.submit');
+    Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::post('stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 });

@@ -24,6 +24,7 @@ use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\SeoMetaController;
 use App\Http\Controllers\Backend\SeoSettingController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\HomeController;
 
 //Removable
 use App\Http\Controllers\Backend\StudentController;
@@ -53,6 +54,10 @@ Route::prefix('command')->group(function () {
 
 //Form submission route with protection and reCAPTCHA
 Route::post('/submit-form', [FormController::class, 'submit'])->middleware(['protect.forms','recaptcha','throttle:4,1'])->name('form.submit');
+
+Route::get('/', [HomeController::class, 'index'])->name('donation.form');
+Route::get('/payment/success', [HomeController::class, 'success'])->name('payment.success.page');
+Route::get('/payment/cancel', [HomeController::class, 'cancel'])->name('payment.cancel.page');
 
 // Global password reset routes to support Laravel's default password.* route names
 Route::middleware(['auth.guest'])->group(function () {

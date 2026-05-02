@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
 
         // Alias middleware for Spatie permission package (v6+ uses singular 'Middleware' namespace)
         $middleware->alias([

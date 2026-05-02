@@ -41,4 +41,26 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'payment' => [
+        'default' => env('PAYMENT_DEFAULT', 'stripe'),
+    ],
+
+    'stripe' => [
+        'mode' => env('STRIPE_MODE', 'sandbox'),
+        'test' => [
+            'key' => env('STRIPE_TEST_KEY'),
+            'secret' => env('STRIPE_TEST_SECRET'),
+            'webhook_secret' => env('STRIPE_TEST_WEBHOOK_SECRET'),
+        ],
+        'live' => [
+            'key' => env('STRIPE_LIVE_KEY'),
+            'secret' => env('STRIPE_LIVE_SECRET'),
+            'webhook_secret' => env('STRIPE_LIVE_WEBHOOK_SECRET'),
+        ],
+    ],
+
+    'exchangerate_host' => [
+        'access_key' => env('EXCHANGERATE_HOST_ACCESS_KEY'),
+    ],
+
 ];
