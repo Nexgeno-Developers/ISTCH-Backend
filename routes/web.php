@@ -49,7 +49,8 @@ Route::prefix('command')->group(function () {
     Route::get('queue-retry/{id?}', [CommandController::class, 'queueRetry']); // optional id
     Route::get('queue-failed', [CommandController::class, 'queueFailed']);
     Route::get('queue-forget/{id}', [CommandController::class, 'queueForget']);
-    Route::get('queue-flush', [CommandController::class, 'queueFlush']);    
+    Route::get('queue-flush', [CommandController::class, 'queueFlush']);
+    Route::get('update-currency-rates', [CommandController::class, 'updateCurrencyRates']);
 });
 
 //Form submission route with protection and reCAPTCHA

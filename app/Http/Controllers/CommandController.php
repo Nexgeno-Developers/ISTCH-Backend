@@ -114,6 +114,14 @@ class CommandController extends Controller
         Artisan::call('queue:flush');
         return 'Flushed all failed jobs.';
     }  
+
+    public function updateCurrencyRates()
+    {
+        $this->checkAccess();
+        Artisan::call('update:currency-rates');
+
+        return nl2br(e(Artisan::output()));
+    }
     
     public function optimizeClear(Request $request)
     {
