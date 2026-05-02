@@ -184,6 +184,23 @@
                     </div>
                     @break
 
+                @case('tags')
+                    <div class="col-md-12 form-group mb-2">
+                        <label for="{{ $inputId }}" class="form-label">
+                            {{ $label }} @if($required) <span class="text-danger">*</span> @endif
+                        </label>
+                        <input
+                            id="{{ $inputId }}"
+                            type="text"
+                            name="meta[{{ $key }}]"
+                            class="form-control aiz-tag-input"
+                            placeholder="{{ $placeholder }}"
+                            value="{{ old('meta.' . $key, $value) }}"
+                            @if($required) required @endif
+                        >
+                    </div>
+                    @break
+
                 @case('repeater')
                     @php
                         $repeater = post_meta_form_value($postData, $field);

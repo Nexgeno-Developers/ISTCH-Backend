@@ -86,20 +86,6 @@
                         </div>
 
                         <div class="mb-3 form-group">
-                            <label for="company-google-map" class="form-label">{{ __('Map') }}</label>
-                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}
-                                    </div>
-                                </div>
-                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                <input type="hidden" id="company-google-map" name="google_map"
-                                    value="{{ old('google_map') }}" class="selected-files">
-                            </div>
-                            <div class="file-preview box sm"></div>
-                        </div>
-
-                        <div class="mb-3 form-group">
                             <label for="company-address" class="form-label">Address <span
                                     class="text-danger">*</span></label>
                             <input type="text" id="company-address" name="address" value="{{ old('address') }}"
@@ -120,26 +106,6 @@
                                 class="form-control" placeholder="" required>
                         </div>
 
-                        <div class="mb-3 form-group">
-                            <label for="company-sales-partnership-email" class="form-label">Sales &amp; Partnership
-                                Email</label>
-                            <input type="email" id="company-sales-partnership-email" name="meta[sales_partner_email]"
-                                value="{{ old('meta.sales_partner_email') }}" class="form-control" placeholder="">
-                        </div>
-
-                        <div class="mb-3 form-group">
-                            <label for="company-technical-support-email" class="form-label">Technical Support
-                                Email</label>
-                            <input type="email" id="company-technical-support-email"
-                                name="meta[technical_support_email]" value="{{ old('meta.technical_support_email') }}"
-                                class="form-control" placeholder="">
-                        </div>
-
-                        <div class="mb-3 form-group">
-                            <label for="company-careers-email" class="form-label">Careers Email</label>
-                            <input type="email" id="company-careers-email" name="meta[careers_email]"
-                                value="{{ old('meta.careers_email') }}" class="form-control" placeholder="">
-                        </div>
                     </div>
                 </div>
 
@@ -172,21 +138,6 @@
                         <label for="meta-facebook" class="form-label">Facebook URL</label>
                         <input type="url" class="form-control" id="meta-facebook" name="meta[facebook_url]"
                             value="{{ old('meta.facebook_url') }}" placeholder="Enter Facebook URL">
-                    </div>
-                    <div class="mb-3 form-group">
-                        <label for="meta-youtube" class="form-label">YouTube URL</label>
-                        <input type="url" class="form-control" id="meta-youtube" name="meta[youtube_url]"
-                            value="{{ old('meta.youtube_url') }}" placeholder="Enter YouTube URL">
-                    </div>
-                    <div class="mb-3 form-group">
-                        <label for="meta-tiktok" class="form-label">TikTok URL</label>
-                        <input type="url" class="form-control" id="meta-tiktok" name="meta[tiktok_url]"
-                            value="{{ old('meta.tiktok_url') }}" placeholder="Enter TikTok URL">
-                    </div>
-                    <div class="mb-3 form-group">
-                        <label for="meta-vimeo" class="form-label">Vimeo URL</label>
-                        <input type="url" class="form-control" id="meta-vimeo" name="meta[vimeo_url]"
-                            value="{{ old('meta.vimeo_url') }}" placeholder="Enter Vimeo URL">
                     </div>
                 </div>
             </div>

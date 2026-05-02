@@ -26,6 +26,8 @@ class PageController extends Controller
         'image',
         'icon',
         'breadcrumb_image',
+        'banner_desktop_image',
+        'banner_mobile_image',
     ];
 
     // Post reference keys

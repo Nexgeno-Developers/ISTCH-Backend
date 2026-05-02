@@ -172,9 +172,21 @@ if (!function_exists('getPageLayouts')) {
                 'label' => 'Global Volunteer',
                 'description' => 'Global volunteer page layout.',
             ],
-            'peace-circle-collaboration' => [
+            'collaboration' => [
                 'label' => 'Peace Circle Collaboration',
                 'description' => 'Peace circle collaboration page layout.',
+            ],
+            'events' => [
+                'label' => 'Events',
+                'description' => 'Events page layout.',
+            ],
+            'donate' => [
+                'label' => 'Donate',
+                'description' => 'Donate page layout.',
+            ],
+            'contact' => [
+                'label' => 'Contact',
+                'description' => 'Contact page layout.',
             ],
 
         ];
@@ -246,29 +258,36 @@ if (!function_exists('getPostLayoutConfig')) {
                         ],
                     ],
                     [
-                        'title' => 'Right Side Blocks',
+                        // 'title' => 'Right Side Blocks',
                         'fields' => [
+                        //     [
+                        //         'key' => 'right_side_blocks',
+                        //         'label' => 'Right Side Blocks',
+                        //         'type' => 'repeater',
+                        //         'item_label' => 'Block',
+                        //         'rules' => 'nullable|array',
+                        //         'fields' => [
+                        //             [
+                        //                 'key' => 'image',
+                        //                 'label' => 'Image',
+                        //                 'type' => 'image',
+                        //                 'rules' => 'nullable|string',
+                        //             ],
+                        //             [
+                        //                 'key' => 'url',
+                        //                 'label' => 'URL',
+                        //                 'type' => 'text',
+                        //                 'placeholder' => 'https://',
+                        //                 'rules' => 'nullable|string|max:500',
+                        //             ],
+                        //         ],
+                        //     ],
                             [
-                                'key' => 'right_side_blocks',
-                                'label' => 'Right Side Blocks',
-                                'type' => 'repeater',
-                                'item_label' => 'Block',
-                                'rules' => 'nullable|array',
-                                'fields' => [
-                                    [
-                                        'key' => 'image',
-                                        'label' => 'Image',
-                                        'type' => 'image',
-                                        'rules' => 'nullable|string',
-                                    ],
-                                    [
-                                        'key' => 'url',
-                                        'label' => 'URL',
-                                        'type' => 'text',
-                                        'placeholder' => 'https://',
-                                        'rules' => 'nullable|string|max:500',
-                                    ],
-                                ],
+                                'key' => 'location',
+                                'label' => 'Location',
+                                'type' => 'tags',
+                                'placeholder' => 'Enter locations',
+                                'rules' => 'nullable|string|max:500',
                             ],
                         ],
                     ],
