@@ -156,6 +156,18 @@ if (!function_exists('getPageLayouts')) {
                 'label' => 'Home',
                 'description' => 'Homepage layout for the website.',
             ],
+            'about-us' => [
+                'label' => 'About Us',
+                'description' => 'About us page layout.',
+            ],
+            'what-we-do' => [
+                'label' => 'What We Do',
+                'description' => 'What we do page layout.',
+            ],
+            'global-movement' => [
+                'label' => 'Global Movement',
+                'description' => 'Global movement page layout.',
+            ],
 
         ];
 
