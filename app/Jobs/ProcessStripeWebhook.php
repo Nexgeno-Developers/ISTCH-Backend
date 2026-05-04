@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProcessStripeWebhook implements ShouldQueue
 {
@@ -82,25 +83,40 @@ class ProcessStripeWebhook implements ShouldQueue
 
     private function handleInvoicePaid(array $invoice): void
     {
-        $subscriptionId = $invoice['subscription'] ?? null;
-        $payment = $subscriptionId ? Payment::where('stripe_subscription_id', $subscriptionId)->first() : null;
+        $invoiceId = $invoice['id'] ?? null;
+        $payment = $invoiceId ? Payment::where('stripe_invoice_id', $invoiceId)->first() : null;
+
         if (!$payment) {
-            $paymentId = $invoice['subscription_details']['metadata']['payment_id']
-                ?? $invoice['parent']['subscription_details']['metadata']['payment_id']
-                ?? null;
-            $payment = $paymentId ? Payment::find($paymentId) : null;
+            $payment = $this->paymentFromInvoice($invoice);
         }
+
         if (!$payment) {
-            Log::warning('Stripe invoice paid webhook could not find payment.', ['subscription' => $subscriptionId]);
+            Log::warning('Stripe invoice paid webhook could not find payment.', [
+                'invoice' => $invoiceId,
+                'subscription' => $this->subscriptionIdFromInvoice($invoice),
+            ]);
             return;
         }
 
+        $this->ensurePaymentGroupId($payment, $invoice);
+
+        if (
+            $invoiceId
+            && $payment->payment_type === Payment::TYPE_MONTHLY
+            && ($invoice['billing_reason'] ?? null) === 'subscription_cycle'
+        ) {
+            $payment = Payment::firstOrCreate(
+                ['stripe_invoice_id' => $invoiceId],
+                $this->renewalPaymentAttributes($payment, $invoice)
+            );
+        }
+
         $payment->forceFill([
-            'stripe_invoice_id' => $invoice['id'] ?? $payment->stripe_invoice_id,
+            'stripe_invoice_id' => $invoiceId ?? $payment->stripe_invoice_id,
             'stripe_payment_intent_id' => $invoice['payment_intent'] ?? $payment->stripe_payment_intent_id,
             'webhook_received_at' => now(),
         ])->save();
-        $payment->markPaid($invoice['payment_intent'] ?? null, $invoice['id'] ?? null);
+        $payment->markPaid($invoice['payment_intent'] ?? null, $invoiceId);
         $payment->mergeMeta(['stripe' => ['invoice_paid' => $this->eventSummary()]]);
     }
 
@@ -148,6 +164,88 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         return $payment;
+    }
+
+    private function paymentFromInvoice(array $invoice): ?Payment
+    {
+        $subscriptionId = $this->subscriptionIdFromInvoice($invoice);
+        $payment = $subscriptionId
+            ? Payment::where('stripe_subscription_id', $subscriptionId)->orderBy('id')->first()
+            : null;
+
+        if (!$payment) {
+            $paymentId = $invoice['subscription_details']['metadata']['payment_id']
+                ?? $invoice['parent']['subscription_details']['metadata']['payment_id']
+                ?? null;
+            $payment = $paymentId ? Payment::find($paymentId) : null;
+        }
+
+        return $payment;
+    }
+
+    private function subscriptionIdFromInvoice(array $invoice): ?string
+    {
+        return $invoice['subscription']
+            ?? $invoice['parent']['subscription_details']['subscription']
+            ?? null;
+    }
+
+    private function ensurePaymentGroupId(Payment $payment, array $invoice): void
+    {
+        if ($payment->payment_group_id) {
+            return;
+        }
+
+        $payment->forceFill([
+            'payment_group_id' => $invoice['subscription_details']['metadata']['payment_group_id']
+                ?? $invoice['parent']['subscription_details']['metadata']['payment_group_id']
+                ?? (string) Str::uuid(),
+        ])->save();
+    }
+
+    private function renewalPaymentAttributes(Payment $payment, array $invoice): array
+    {
+        $amount = $this->amountFromInvoice($invoice, $payment);
+        $exchangeRate = (float) $payment->exchange_rate > 0 ? (float) $payment->exchange_rate : 1;
+
+        return [
+            'full_name' => $payment->full_name,
+            'email' => $payment->email,
+            'phone' => $payment->phone,
+            'country' => $payment->country,
+            'payment_group_id' => $payment->payment_group_id,
+            'payment_type' => Payment::TYPE_MONTHLY,
+            'currency' => strtoupper($invoice['currency'] ?? $payment->currency),
+            'amount' => $amount,
+            'exchange_rate' => $exchangeRate,
+            'usd_amount' => round($amount / $exchangeRate, 2),
+            'payment_status' => Payment::STATUS_PENDING,
+            'stripe_customer_id' => $invoice['customer'] ?? $payment->stripe_customer_id,
+            'stripe_subscription_id' => $this->subscriptionIdFromInvoice($invoice) ?? $payment->stripe_subscription_id,
+            'stripe_payment_intent_id' => $invoice['payment_intent'] ?? null,
+            'webhook_received_at' => now(),
+            'meta' => [
+                'payment_provider' => 'stripe',
+                'stripe_mode' => $payment->meta['stripe_mode'] ?? config('services.stripe.mode', 'sandbox'),
+                'source_payment_id' => $payment->id,
+                'invoice_billing_reason' => $invoice['billing_reason'] ?? null,
+            ],
+        ];
+    }
+
+    private function amountFromInvoice(array $invoice, Payment $payment): float
+    {
+        $amount = $invoice['amount_paid'] ?? $invoice['amount_due'] ?? null;
+        if (!is_numeric($amount)) {
+            return (float) $payment->amount;
+        }
+
+        $currency = strtoupper($invoice['currency'] ?? $payment->currency);
+        $zeroDecimalCurrencies = ['BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'];
+
+        return in_array($currency, $zeroDecimalCurrencies, true)
+            ? (float) $amount
+            : round(((float) $amount) / 100, 2);
     }
 
     private function eventSummary(): array

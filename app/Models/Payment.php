@@ -20,6 +20,7 @@ class Payment extends Model
         'email',
         'phone',
         'country',
+        'payment_group_id',
         'payment_type',
         'currency',
         'amount',

@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\BlogCategoryController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\PostCategoryController;
 use App\Http\Controllers\Backend\PostTagController;
+use App\Http\Controllers\Backend\PaymentController as BackendPaymentController;
 use App\Http\Controllers\Backend\AuthorController;
 use App\Http\Controllers\Backend\FormController as BackendFormController;
 use App\Http\Controllers\Backend\UserController;
@@ -138,6 +139,11 @@ Route::prefix('backend')->group(function () {
     //Forms Routes
     Route::middleware('auth.backend')->group(function () {
         Route::get('forms-by/{form_name}', [BackendFormController::class, 'index'])->name('forms.by');
+    });
+
+    //Payments Routes
+    Route::middleware('auth.backend')->group(function () {
+        Route::resource('payments', BackendPaymentController::class)->only(['index', 'show']);
     });
     
     //Visitors Routes

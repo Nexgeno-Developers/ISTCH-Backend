@@ -76,16 +76,23 @@ class StripePayment
             'cancel_url' => $cancelUrl,
             'metadata' => [
                 'payment_id' => (string) $payment->id,
+                'payment_group_id' => (string) $payment->payment_group_id,
                 'payment_type' => $payment->payment_type,
             ],
         ];
 
         if ($payment->payment_type === Payment::TYPE_ONE_TIME) {
-            $params['payment_intent_data'] = ['metadata' => ['payment_id' => (string) $payment->id]];
+            $params['payment_intent_data'] = ['metadata' => [
+                'payment_id' => (string) $payment->id,
+                'payment_group_id' => (string) $payment->payment_group_id,
+            ]];
         }
 
         if ($payment->payment_type === Payment::TYPE_MONTHLY) {
-            $params['subscription_data'] = ['metadata' => ['payment_id' => (string) $payment->id]];
+            $params['subscription_data'] = ['metadata' => [
+                'payment_id' => (string) $payment->id,
+                'payment_group_id' => (string) $payment->payment_group_id,
+            ]];
         }
 
         $session = Session::create($params);

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -77,6 +78,7 @@ class PaymentController extends Controller
                     'email' => $validated['email'],
                     'phone' => $validated['phone'] ?? null,
                     'country' => $validated['country'],
+                    'payment_group_id' => (string) Str::uuid(),
                     'payment_type' => $validated['payment_type'],
                     'currency' => $currency->code,
                     'amount' => $amount,
@@ -101,6 +103,7 @@ class PaymentController extends Controller
                 'message' => 'Checkout session created.',
                 'data' => [
                     'payment_id' => $payment->id,
+                    'payment_group_id' => $payment->payment_group_id,
                     'payment_status' => $payment->payment_status,
                     'checkout_session_id' => $payment->stripe_checkout_session_id,
                     'checkout_url' => $payment->getAttribute('checkout_url'),
@@ -172,6 +175,7 @@ class PaymentController extends Controller
             'id' => $payment->id,
             'payment_status' => $payment->payment_status,
             'payment_type' => $payment->payment_type,
+            'payment_group_id' => $payment->payment_group_id,
             'currency' => $payment->currency,
             'amount' => $payment->amount,
             'usd_amount' => $payment->usd_amount,
