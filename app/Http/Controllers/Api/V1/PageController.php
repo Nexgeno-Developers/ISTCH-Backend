@@ -28,6 +28,7 @@ class PageController extends Controller
         'breadcrumb_image',
         'banner_desktop_image',
         'banner_mobile_image',
+        'teams',
     ];
 
     // Post reference keys
