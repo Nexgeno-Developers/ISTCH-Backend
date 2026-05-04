@@ -22,6 +22,7 @@
     $about_title = $metaValue('about_title');
     $about_subtitle = $metaValue('about_subtitle');
     $about_description = $metaValue('about_description');
+    $about_quote_text = $metaValue('about_quote_text');
 
     $core_values_title = $metaValue('core_values_title');
     $core_values = $metaArray('core_values');
@@ -39,6 +40,8 @@
 
     $support_title = $metaValue('support_title');
     $support_description = $metaValue('support_description');
+    $support_image = $metaValue('support_image');
+    $support_joined_text = $metaValue('support_joined_text');
 
     $testimonials_title = $metaValue('testimonials_title');
     $testimonials = $metaArray('testimonials');
@@ -194,6 +197,11 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
         <textarea name="meta[about_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $about_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Quote Text</label>
+        <input class="form-control" value="{{ $about_quote_text }}" name="meta[about_quote_text]" type="text" placeholder="Enter quote text">
     </div>
 </div>
 
@@ -415,6 +423,20 @@
         <h4 class="text-primary">Support Section</h4>
     </div>
 
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $support_image }}" type="hidden" name="meta[support_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
         <input class="form-control" value="{{ $support_title }}" name="meta[support_title]" type="text" placeholder="Enter title">
@@ -423,6 +445,11 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
         <textarea name="meta[support_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $support_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Joined Text</label>
+        <input class="form-control" value="{{ $support_joined_text }}" name="meta[support_joined_text]" type="text" placeholder="Joined by 45,000+ donors">
     </div>
 </div>
 

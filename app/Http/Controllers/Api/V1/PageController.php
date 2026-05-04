@@ -161,44 +161,44 @@ class PageController extends Controller
                     // $autofetchSections['industries'] = page_details_from_ids($ids);
                 }                
 
-                if($param === 'latest_insights') {
-                    // $categoryId = 1;
-                    // $postsQuery = Post::query()
-                    //     ->where('is_active', true)
-                    //     ->whereHas('categories', function ($q) use ($categoryId) {
-                    //         $q->where('categories.id', $categoryId);
-                    //     })
-                    //     ->with('meta')
-                    //     ->orderByDesc('published_at')
-                    //     ->limit(8);
+                if($param === 'events') {
+                    $categoryId = 1;
+                    $postsQuery = Post::query()
+                        ->where('is_active', true)
+                        ->whereHas('categories', function ($q) use ($categoryId) {
+                            $q->where('categories.id', $categoryId);
+                        })
+                        ->with('meta')
+                        ->orderByDesc('published_at')
+                        ->limit(8);
 
-                    // if (auth()->user()?->company_id) {
-                    //     $postsQuery->where('company_id', auth()->user()->company_id);
-                    // }
+                    if (auth()->user()?->company_id) {
+                        $postsQuery->where('company_id', auth()->user()->company_id);
+                    }
 
-                    // $latestPosts = $postsQuery->get();
+                    $latestPosts = $postsQuery->get();
 
-                    // $autofetchSections['latest_insights'] = $latestPosts->map(function (Post $post) {
-                    //     $summary = $post->meta->firstWhere('meta_key', 'short_summary')?->meta_value;
-                    //     if (!filled($summary)) {
-                    //         $summary = $post->meta->firstWhere('meta_key', 'summary')?->meta_value;
-                    //     }
+                    $autofetchSections['events'] = $latestPosts->map(function (Post $post) {
+                        $summary = $post->meta->firstWhere('meta_key', 'short_summary')?->meta_value;
+                        if (!filled($summary)) {
+                            $summary = $post->meta->firstWhere('meta_key', 'summary')?->meta_value;
+                        }
 
-                    //     $date = $post->meta->firstWhere('meta_key', 'date')?->meta_value;
-                    //     $time = $post->meta->firstWhere('meta_key', 'time')?->meta_value;
+                        $date = $post->meta->firstWhere('meta_key', 'date')?->meta_value;
+                        $time = $post->meta->firstWhere('meta_key', 'time')?->meta_value;
 
-                    //     return [
-                    //         'id' => $post->id,
-                    //         'title' => $post->title,
-                    //         'slug' => $post->slug,
-                    //         'featured_image' => filled($post->featured_image)
-                    //             ? uploaded_asset_details_from_ids($post->featured_image)
-                    //             : null,
-                    //         'summary' => $summary,
-                    //         'date' => filled($date) ? $date : null,
-                    //         'time' => filled($time) ? $time : null,
-                    //     ];
-                    // })->values()->all();
+                        return [
+                            'id' => $post->id,
+                            'title' => $post->title,
+                            'slug' => $post->slug,
+                            'featured_image' => filled($post->featured_image)
+                                ? uploaded_asset_details_from_ids($post->featured_image)
+                                : null,
+                            'summary' => $summary,
+                            'date' => filled($date) ? $date : null,
+                            'time' => filled($time) ? $time : null,
+                        ];
+                    })->values()->all();
                 }                  
             endforeach;
 
