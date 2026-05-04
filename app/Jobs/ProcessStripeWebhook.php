@@ -27,7 +27,9 @@ class ProcessStripeWebhook implements ShouldQueue
             'checkout.session.completed' => $this->handleCheckoutSessionCompleted($object),
             'payment_intent.succeeded' => $this->handlePaymentIntentSucceeded($object),
             'payment_intent.payment_failed' => $this->handlePaymentIntentFailed($object),
+            'invoice.created' => $this->handleInvoiceCreated($object),
             'invoice.paid' => $this->handleInvoicePaid($object),
+            'invoice.payment_succeeded' => $this->handleInvoicePaid($object),
             'customer.subscription.deleted' => $this->handleSubscriptionDeleted($object),
             default => Log::info('Unhandled Stripe webhook event.', ['type' => $type]),
         };
@@ -79,6 +81,38 @@ class ProcessStripeWebhook implements ShouldQueue
             'webhook_received_at' => now(),
         ])->save();
         $payment->mergeMeta(['stripe' => ['payment_intent_failed' => $this->eventSummary()]]);
+    }
+
+    private function handleInvoiceCreated(array $invoice): void
+    {
+        if (($invoice['billing_reason'] ?? null) !== 'subscription_cycle') {
+            return;
+        }
+
+        $invoiceId = $invoice['id'] ?? null;
+        if (!$invoiceId) {
+            return;
+        }
+
+        $payment = Payment::where('stripe_invoice_id', $invoiceId)->first();
+        if ($payment) {
+            $payment->mergeMeta(['stripe' => ['invoice_created' => $this->eventSummary()]]);
+            return;
+        }
+
+        $sourcePayment = $this->paymentFromInvoice($invoice);
+        if (!$sourcePayment) {
+            Log::warning('Stripe invoice created webhook could not find source payment.', [
+                'invoice' => $invoiceId,
+                'subscription' => $this->subscriptionIdFromInvoice($invoice),
+            ]);
+            return;
+        }
+
+        $this->ensurePaymentGroupId($sourcePayment, $invoice);
+
+        $payment = Payment::create($this->renewalPaymentAttributes($sourcePayment, $invoice));
+        $payment->mergeMeta(['stripe' => ['invoice_created' => $this->eventSummary()]]);
     }
 
     private function handleInvoicePaid(array $invoice): void
@@ -235,7 +269,10 @@ class ProcessStripeWebhook implements ShouldQueue
 
     private function amountFromInvoice(array $invoice, Payment $payment): float
     {
-        $amount = $invoice['amount_paid'] ?? $invoice['amount_due'] ?? null;
+        $amount = $invoice['amount_paid'] ?? null;
+        if (!is_numeric($amount) || (float) $amount <= 0) {
+            $amount = $invoice['amount_due'] ?? null;
+        }
         if (!is_numeric($amount)) {
             return (float) $payment->amount;
         }
