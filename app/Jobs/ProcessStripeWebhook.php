@@ -208,9 +208,7 @@ class ProcessStripeWebhook implements ShouldQueue
             : null;
 
         if (!$payment) {
-            $paymentId = $invoice['subscription_details']['metadata']['payment_id']
-                ?? $invoice['parent']['subscription_details']['metadata']['payment_id']
-                ?? null;
+            $paymentId = $this->metadataValueFromInvoice($invoice, 'payment_id');
             $payment = $paymentId ? Payment::find($paymentId) : null;
         }
 
@@ -231,10 +229,18 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         $payment->forceFill([
-            'payment_group_id' => $invoice['subscription_details']['metadata']['payment_group_id']
-                ?? $invoice['parent']['subscription_details']['metadata']['payment_group_id']
-                ?? (string) Str::uuid(),
+            'payment_group_id' => $this->metadataValueFromInvoice($invoice, 'payment_group_id') ?? (string) Str::uuid(),
         ])->save();
+    }
+
+    private function metadataValueFromInvoice(array $invoice, string $key): ?string
+    {
+        $value = $invoice['metadata'][$key]
+            ?? $invoice['subscription_details']['metadata'][$key]
+            ?? $invoice['parent']['subscription_details']['metadata'][$key]
+            ?? null;
+
+        return is_scalar($value) && (string) $value !== '' ? (string) $value : null;
     }
 
     private function renewalPaymentAttributes(Payment $payment, array $invoice): array
@@ -256,6 +262,7 @@ class ProcessStripeWebhook implements ShouldQueue
             'payment_status' => Payment::STATUS_PENDING,
             'stripe_customer_id' => $invoice['customer'] ?? $payment->stripe_customer_id,
             'stripe_subscription_id' => $this->subscriptionIdFromInvoice($invoice) ?? $payment->stripe_subscription_id,
+            'stripe_invoice_id' => $invoice['id'] ?? null,
             'stripe_payment_intent_id' => $invoice['payment_intent'] ?? null,
             'webhook_received_at' => now(),
             'meta' => [
