@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Stripe\Invoice as StripeInvoice;
 
 class ProcessStripeWebhook implements ShouldQueue
 {
@@ -30,6 +31,7 @@ class ProcessStripeWebhook implements ShouldQueue
             'invoice.created' => $this->handleInvoiceCreated($object),
             'invoice.paid' => $this->handleInvoicePaid($object),
             'invoice.payment_succeeded' => $this->handleInvoicePaid($object),
+            'invoice_payment.paid' => $this->handleInvoicePaymentPaid($object),
             'customer.subscription.deleted' => $this->handleSubscriptionDeleted($object),
             default => Log::info('Unhandled Stripe webhook event.', ['type' => $type]),
         };
@@ -118,6 +120,7 @@ class ProcessStripeWebhook implements ShouldQueue
     private function handleInvoicePaid(array $invoice): void
     {
         $invoiceId = $invoice['id'] ?? null;
+        $paymentIntentId = $this->paymentIntentIdFromInvoice($invoice);
         $payment = $invoiceId ? Payment::where('stripe_invoice_id', $invoiceId)->first() : null;
 
         if (!$payment) {
@@ -147,11 +150,47 @@ class ProcessStripeWebhook implements ShouldQueue
 
         $payment->forceFill([
             'stripe_invoice_id' => $invoiceId ?? $payment->stripe_invoice_id,
-            'stripe_payment_intent_id' => $invoice['payment_intent'] ?? $payment->stripe_payment_intent_id,
+            'stripe_payment_intent_id' => $paymentIntentId ?? $payment->stripe_payment_intent_id,
             'webhook_received_at' => now(),
         ])->save();
-        $payment->markPaid($invoice['payment_intent'] ?? null, $invoiceId);
+        $payment->markPaid($paymentIntentId, $invoiceId);
         $payment->mergeMeta(['stripe' => ['invoice_paid' => $this->eventSummary()]]);
+    }
+
+    private function handleInvoicePaymentPaid(array $invoicePayment): void
+    {
+        $invoiceId = isset($invoicePayment['invoice']) && is_string($invoicePayment['invoice'])
+            ? $invoicePayment['invoice']
+            : null;
+        $paymentIntentId = $this->paymentIntentIdFromInvoicePayment($invoicePayment);
+
+        $payment = $invoiceId ? Payment::where('stripe_invoice_id', $invoiceId)->first() : null;
+
+        if (!$payment && $paymentIntentId) {
+            $payment = Payment::where('stripe_payment_intent_id', $paymentIntentId)->first();
+        }
+
+        if (!$payment) {
+            $invoice = $this->retrieveStripeInvoice($invoiceId);
+            if ($invoice) {
+                $this->handleInvoicePaid($invoice);
+                return;
+            }
+
+            Log::warning('Stripe invoice payment paid webhook could not find existing payment.', [
+                'invoice' => $invoiceId,
+                'payment_intent' => $paymentIntentId,
+            ]);
+            return;
+        }
+
+        $payment->forceFill([
+            'stripe_invoice_id' => $invoiceId ?? $payment->stripe_invoice_id,
+            'stripe_payment_intent_id' => $paymentIntentId ?? $payment->stripe_payment_intent_id,
+            'webhook_received_at' => now(),
+        ])->save();
+        $payment->markPaid($paymentIntentId, $invoiceId);
+        $payment->mergeMeta(['stripe' => ['invoice_payment_paid' => $this->eventSummary()]]);
     }
 
     private function handleSubscriptionDeleted(array $subscription): void
@@ -247,6 +286,7 @@ class ProcessStripeWebhook implements ShouldQueue
     {
         $amount = $this->amountFromInvoice($invoice, $payment);
         $exchangeRate = (float) $payment->exchange_rate > 0 ? (float) $payment->exchange_rate : 1;
+        $paymentIntentId = $this->paymentIntentIdFromInvoice($invoice);
 
         return [
             'full_name' => $payment->full_name,
@@ -263,7 +303,7 @@ class ProcessStripeWebhook implements ShouldQueue
             'stripe_customer_id' => $invoice['customer'] ?? $payment->stripe_customer_id,
             'stripe_subscription_id' => $this->subscriptionIdFromInvoice($invoice) ?? $payment->stripe_subscription_id,
             'stripe_invoice_id' => $invoice['id'] ?? null,
-            'stripe_payment_intent_id' => $invoice['payment_intent'] ?? null,
+            'stripe_payment_intent_id' => $paymentIntentId,
             'webhook_received_at' => now(),
             'meta' => [
                 'payment_provider' => 'stripe',
@@ -290,6 +330,43 @@ class ProcessStripeWebhook implements ShouldQueue
         return in_array($currency, $zeroDecimalCurrencies, true)
             ? (float) $amount
             : round(((float) $amount) / 100, 2);
+    }
+
+    private function paymentIntentIdFromInvoice(array $invoice): ?string
+    {
+        $value = $invoice['payment_intent']
+            ?? $invoice['payment']['payment_intent']
+            ?? $invoice['payments']['data'][0]['payment']['payment_intent']
+            ?? null;
+
+        return is_scalar($value) && (string) $value !== '' ? (string) $value : null;
+    }
+
+    private function paymentIntentIdFromInvoicePayment(array $invoicePayment): ?string
+    {
+        $value = $invoicePayment['payment']['payment_intent']
+            ?? $invoicePayment['payment_intent']
+            ?? null;
+
+        return is_scalar($value) && (string) $value !== '' ? (string) $value : null;
+    }
+
+    private function retrieveStripeInvoice(?string $invoiceId): ?array
+    {
+        if (!$invoiceId) {
+            return null;
+        }
+
+        try {
+            return StripeInvoice::retrieve($invoiceId)->toArray();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to retrieve Stripe invoice for webhook recovery.', [
+                'invoice' => $invoiceId,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     private function eventSummary(): array

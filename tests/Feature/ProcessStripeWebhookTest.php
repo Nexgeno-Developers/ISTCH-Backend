@@ -57,3 +57,26 @@ it('reads invoice metadata and keeps the stripe invoice id on renewal payments',
         ->and($attributes['amount'])->toBe(500.0)
         ->and($attributes['payment_status'])->toBe(Payment::STATUS_PENDING);
 });
+
+it('extracts payment intents from newer invoice payment payloads', function () {
+    $job = new ProcessStripeWebhook([
+        'id' => 'evt_invoice_payment_paid',
+        'type' => 'invoice_payment.paid',
+        'created' => 1783235098,
+    ]);
+
+    $invoicePayment = [
+        'id' => 'invpay_123',
+        'object' => 'invoice_payment',
+        'invoice' => 'in_123',
+        'payment' => [
+            'payment_intent' => 'pi_123',
+            'type' => 'payment_intent',
+        ],
+    ];
+
+    $method = new ReflectionMethod($job, 'paymentIntentIdFromInvoicePayment');
+    $method->setAccessible(true);
+
+    expect($method->invoke($job, $invoicePayment))->toBe('pi_123');
+});
