@@ -24,6 +24,7 @@
     $financial_support_navigation_url = $metaValue('financial_support_navigation_url');
 
     $join_title = $metaValue('join_title');
+    $join_bg_image = $metaValue('join_bg_image');
     $join_navigation_url = $metaValue('join_navigation_url');
 @endphp
 
@@ -161,6 +162,20 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
         <input class="form-control" value="{{ $join_title }}" name="meta[join_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">BG Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $join_bg_image }}" type="hidden" name="meta[join_bg_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
     </div>
 
     <div class="col-md-12 form-group mb-2">

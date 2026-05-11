@@ -113,7 +113,7 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
-        <textarea name="meta[global_peace_description]" class="form-control" rows="4" placeholder="Enter description">{{ $global_peace_description }}</textarea>
+        <textarea name="meta[global_peace_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $global_peace_description }}</textarea>
     </div>
 
     <div class="col-md-12">

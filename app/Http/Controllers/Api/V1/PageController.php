@@ -28,6 +28,7 @@ class PageController extends Controller
         'breadcrumb_image',
         'banner_desktop_image',
         'banner_mobile_image',
+        'join_bg_image',
         'teams',
     ];
 

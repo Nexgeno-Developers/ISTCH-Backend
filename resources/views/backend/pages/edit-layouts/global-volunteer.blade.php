@@ -50,7 +50,7 @@
         <input class="form-control" value="{{ $leadership_subtitle }}" name="meta[leadership_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-12 d-none">
         <label class="form-label">Image</label>
         <div class="form-group mb-2">
             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
@@ -69,12 +69,12 @@
         <textarea name="meta[leadership_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $leadership_description }}</textarea>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-12 d-none">
         <hr>
         <h5 class="text-primary">Key Points</h5>
     </div>
 
-    <div class="leadership-key-points-target w-100">
+    <div class="leadership-key-points-target w-100 d-none">
         @if(isset($leadership_key_points['itration']) && is_array($leadership_key_points['itration']))
             @foreach($leadership_key_points['itration'] as $index => $itration)
                 <div class="row remove-parent">
@@ -96,7 +96,7 @@
         @endif
     </div>
 
-    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".leadership-key-points-target" data-content='
+    <button type="button" class="d-none mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".leadership-key-points-target" data-content='
         <div class="row remove-parent">
             <div class="col-md-11">
                 <div class="row">

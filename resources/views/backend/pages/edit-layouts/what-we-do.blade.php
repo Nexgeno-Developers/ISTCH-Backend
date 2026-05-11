@@ -53,10 +53,22 @@
                                 <input value="{{ $hero_items['title'][$index] ?? '' }}" name="meta[hero_items][title][]" type="text" class="form-control" placeholder="Enter title">
                             </div>
                             <div class="col-md-6 form-group mb-2">
-                                <input value="{{ $hero_items['description'][$index] ?? '' }}" name="meta[hero_items][description][]" type="text" class="form-control" placeholder="Enter description">
+                                <textarea name="meta[hero_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $hero_items['description'][$index] ?? '' }}</textarea>
                             </div>
                             <div class="col-md-6 form-group mb-2">
                                 <input value="{{ $hero_items['key_highlights'][$index] ?? '' }}" name="meta[hero_items][key_highlights][]" type="text" class="form-control" placeholder="Enter key highlights">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[hero_items][icon][]" class="selected-files" value="{{ $hero_items['icon'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
                             </div>
                             <div class="col-md-6 form-group mb-2">
                                 <input value="{{ $hero_items['navigation_url'][$index] ?? '' }}" name="meta[hero_items][navigation_url][]" type="text" class="form-control" placeholder="Enter navigation URL">
@@ -94,10 +106,22 @@
                         <input value="" name="meta[hero_items][title][]" type="text" class="form-control" placeholder="Enter title">
                     </div>
                     <div class="col-md-6 form-group mb-2">
-                        <input value="" name="meta[hero_items][description][]" type="text" class="form-control" placeholder="Enter description">
+                        <textarea name="meta[hero_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description"></textarea>
                     </div>
                     <div class="col-md-6 form-group mb-2">
                         <input value="" name="meta[hero_items][key_highlights][]" type="text" class="form-control" placeholder="Enter key highlights">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[hero_items][icon][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
                     </div>
                     <div class="col-md-6 form-group mb-2">
                         <input value="" name="meta[hero_items][navigation_url][]" type="text" class="form-control" placeholder="Enter navigation URL">
