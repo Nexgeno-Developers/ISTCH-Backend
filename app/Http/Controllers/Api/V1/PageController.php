@@ -28,13 +28,27 @@ class PageController extends Controller
         'breadcrumb_image',
         'banner_desktop_image',
         'banner_mobile_image',
+        'why_peace_needs_image',
+        'our_approach_images',
+        'vision_image',
         'join_bg_image',
-        'teams',
+        'collaborate_image',
+        'global_presence_image',
+        'financial_support_icon',
+        'global_peace_image',
+        'global_peace_gallery_images',
+        'leadership_image',
+        'support_image',
+        'global_movements_first_image',
+        'global_movements_second_image',
     ];
 
     // Post reference keys
     private array $post_category_MetaKeys = [
         'post_block_categories',
+        'events_posts',
+        'hero_post_categories',
+        'upcoming_convocations_post_categories',
     ];
 
     // Page reference keys
@@ -51,6 +65,21 @@ class PageController extends Controller
         'engagement_items',
         'our_actions',
         'core_values',
+        'teams',
+        'collaborate_items',
+        'engage_items',
+        'leadership_key_points',
+        'thought_leadership_items',
+        'global_movements_items',
+        'build_peace_items',
+        'impact_items',
+        'philosophy_items',
+        'about_items',
+        'peace_building_items',
+        'our_approach_items',
+        'what_we_do_items',
+        'our_inspiration_key_highlights',
+        'i_am_piece_items',
         'highlights',
     ];
 

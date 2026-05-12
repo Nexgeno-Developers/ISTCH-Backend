@@ -21,22 +21,41 @@
 
     $about_title = $metaValue('about_title');
     $about_subtitle = $metaValue('about_subtitle');
-    $about_description = $metaValue('about_description');
-    $about_quote_text = $metaValue('about_quote_text');
+    $about_items = $metaArray('about_items');
+
+    $why_peace_needs_title = $metaValue('why_peace_needs_title');
+    $why_peace_needs_description = $metaValue('why_peace_needs_description');
+    $why_peace_needs_image = $metaValue('why_peace_needs_image');
 
     $core_values_title = $metaValue('core_values_title');
     $core_values = $metaArray('core_values');
 
-    $our_action_title = $metaValue('our_action_title');
-    $our_action_subtitle = $metaValue('our_action_subtitle');
-    $our_actions = $metaArray('our_actions');
+    $peace_building_title = $metaValue('peace_building_title');
+    $peace_building_items = $metaArray('peace_building_items');
+
+    $our_approach_title = $metaValue('our_approach_title');
+    $our_approach_subtitle = $metaValue('our_approach_subtitle');
+    $our_approach_items = $metaArray('our_approach_items');
+    $our_approach_description = $metaValue('our_approach_description');
+    $our_approach_images = $metaValue('our_approach_images');
+
+    $what_we_do_title = $metaValue('what_we_do_title');
+    $what_we_do_subtitle = $metaValue('what_we_do_subtitle');
+    $what_we_do_items = $metaArray('what_we_do_items');
 
     $events_title = $metaValue('events_title');
     $events_subtitle = $metaValue('events_subtitle');
+    $events_description = $metaValue('events_description');
     $events_posts = $metaArray('events_posts');
+
+    $our_inspiration_title = $metaValue('our_inspiration_title');
+    $our_inspiration_subtitle = $metaValue('our_inspiration_subtitle');
+    $our_inspiration_key_highlights = $metaArray('our_inspiration_key_highlights');
+    $our_inspiration_button_url = $metaValue('our_inspiration_button_url');
 
     $i_am_piece_title = $metaValue('i_am_piece_title');
     $i_am_piece_subtitle = $metaValue('i_am_piece_subtitle');
+    $i_am_piece_items = $metaArray('i_am_piece_items');
 
     $support_title = $metaValue('support_title');
     $support_description = $metaValue('support_description');
@@ -104,7 +123,7 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
-        <textarea name="meta[banner_description]" class="form-control" rows="3" placeholder="Enter description">{{ $banner_description }}</textarea>
+        <textarea name="meta[banner_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $banner_description }}</textarea>
     </div>
 
     <div class="col-md-6 form-group mb-2">
@@ -181,6 +200,37 @@
 <div class="row">
     <div class="col-md-12">
         <hr>
+        <h4 class="text-primary">Why Peace Needs Section</h4>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $why_peace_needs_title }}" name="meta[why_peace_needs_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Description</label>
+        <textarea name="meta[why_peace_needs_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $why_peace_needs_description }}</textarea>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $why_peace_needs_image }}" type="hidden" name="meta[why_peace_needs_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
         <h4 class="text-primary">About Section</h4>
     </div>
 
@@ -194,15 +244,77 @@
         <input class="form-control" value="{{ $about_subtitle }}" name="meta[about_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Description</label>
-        <textarea name="meta[about_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $about_description }}</textarea>
+    <div class="about-items-target w-100">
+        @if(isset($about_items['itration']) && is_array($about_items['itration']))
+            @foreach($about_items['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[about_items][itration][]" type="hidden">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[about_items][image][]" class="selected-files" value="{{ $about_items['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group mb-2">
+                                <input value="{{ $about_items['title'][$index] ?? '' }}" name="meta[about_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            </div>
+                            <div class="col-md-12 form-group mb-2">
+                                <textarea name="meta[about_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $about_items['description'][$index] ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        @endif
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Quote Text</label>
-        <input class="form-control" value="{{ $about_quote_text }}" name="meta[about_quote_text]" type="text" placeholder="Enter quote text">
-    </div>
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".about-items-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[about_items][itration][]" type="hidden">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[about_items][image][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group mb-2">
+                        <input value="" name="meta[about_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    </div>
+                    <div class="col-md-12 form-group mb-2">
+                        <textarea name="meta[about_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add More</span>
+    </button>
 </div>
 
 <div class="row">
@@ -283,29 +395,25 @@
     </button>
 </div>
 
+{{-- Our Action Section --}}
 <div class="row">
     <div class="col-md-12">
         <hr>
-        <h4 class="text-primary">Our Action Section</h4>
+        <h4 class="text-primary">Peace Building Section</h4>
     </div>
 
-    <div class="col-md-6 form-group mb-2">
+    <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $our_action_title }}" name="meta[our_action_title]" type="text" placeholder="Enter title">
+        <input class="form-control" value="{{ $peace_building_title }}" name="meta[peace_building_title]" type="text" placeholder="Enter title">
     </div>
 
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Subtitle</label>
-        <input class="form-control" value="{{ $our_action_subtitle }}" name="meta[our_action_subtitle]" type="text" placeholder="Enter subtitle">
-    </div>
-
-    <div class="our-actions-target w-100">
-        @if(isset($our_actions['itration']) && is_array($our_actions['itration']))
-            @foreach($our_actions['itration'] as $index => $itration)
+    <div class="peace-building-items-target w-100">
+        @if(isset($peace_building_items['itration']) && is_array($peace_building_items['itration']))
+            @foreach($peace_building_items['itration'] as $index => $itration)
                 <div class="row remove-parent">
                     <div class="col-md-11">
                         <div class="row">
-                            <input value="{{ $index }}" name="meta[our_actions][itration][]" type="hidden">
+                            <input value="{{ $index }}" name="meta[peace_building_items][itration][]" type="hidden">
                             <div class="col-md-6">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
@@ -313,16 +421,16 @@
                                             <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                                         </div>
                                         <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                        <input type="hidden" name="meta[our_actions][icon][]" class="selected-files" value="{{ $our_actions['icon'][$index] ?? '' }}">
+                                        <input type="hidden" name="meta[peace_building_items][image][]" class="selected-files" value="{{ $peace_building_items['image'][$index] ?? '' }}">
                                     </div>
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group mb-2">
-                                <input value="{{ $our_actions['title'][$index] ?? '' }}" name="meta[our_actions][title][]" type="text" class="form-control" placeholder="Enter title">
+                                <input value="{{ $peace_building_items['title'][$index] ?? '' }}" name="meta[peace_building_items][title][]" type="text" class="form-control" placeholder="Enter title">
                             </div>
                             <div class="col-md-12 form-group mb-2">
-                                <textarea name="meta[our_actions][description][]" class="form-control" rows="3" placeholder="Enter description">{{ $our_actions['description'][$index] ?? '' }}</textarea>
+                                <textarea name="meta[peace_building_items][description][]" class="form-control" rows="3" placeholder="Enter description">{{ $peace_building_items['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -336,11 +444,11 @@
         @endif
     </div>
 
-    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".our-actions-target" data-content='
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="3" data-target=".peace-building-items-target" data-content='
         <div class="row remove-parent">
             <div class="col-md-11">
                 <div class="row">
-                    <input value="data" name="meta[our_actions][itration][]" type="hidden">
+                    <input value="data" name="meta[peace_building_items][itration][]" type="hidden">
                     <div class="col-md-6">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
@@ -348,16 +456,207 @@
                                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                                 </div>
                                 <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                <input type="hidden" name="meta[our_actions][icon][]" class="selected-files">
+                                <input type="hidden" name="meta[peace_building_items][image][]" class="selected-files">
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
                     <div class="col-md-6 form-group mb-2">
-                        <input value="" name="meta[our_actions][title][]" type="text" class="form-control" placeholder="Enter title">
+                        <input value="" name="meta[peace_building_items][title][]" type="text" class="form-control" placeholder="Enter title">
                     </div>
                     <div class="col-md-12 form-group mb-2">
-                        <textarea name="meta[our_actions][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                        <textarea name="meta[peace_building_items][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add More</span>
+    </button>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Our Approach Section</h4>
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $our_approach_title }}" name="meta[our_approach_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $our_approach_subtitle }}" name="meta[our_approach_subtitle]" type="text" placeholder="Enter subtitle">
+    </div>
+
+    <div class="our-approach-items-target w-100">
+        @if(isset($our_approach_items['itration']) && is_array($our_approach_items['itration']))
+            @foreach($our_approach_items['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[our_approach_items][itration][]" type="hidden">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[our_approach_items][image][]" class="selected-files" value="{{ $our_approach_items['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group mb-2">
+                                <input value="{{ $our_approach_items['title'][$index] ?? '' }}" name="meta[our_approach_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="6" data-target=".our-approach-items-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[our_approach_items][itration][]" type="hidden">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[our_approach_items][image][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group mb-2">
+                        <input value="" name="meta[our_approach_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add More</span>
+    </button>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Description</label>
+        <textarea name="meta[our_approach_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $our_approach_description }}</textarea>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Images</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $our_approach_images }}" type="hidden" name="meta[our_approach_images]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">What We Do Section</h4>
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $what_we_do_title }}" name="meta[what_we_do_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $what_we_do_subtitle }}" name="meta[what_we_do_subtitle]" type="text" placeholder="Enter subtitle">
+    </div>
+
+    <div class="what-we-do-items-target w-100">
+        @if(isset($what_we_do_items['itration']) && is_array($what_we_do_items['itration']))
+            @foreach($what_we_do_items['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[what_we_do_items][itration][]" type="hidden">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[what_we_do_items][image][]" class="selected-files" value="{{ $what_we_do_items['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group mb-2">
+                                <input value="{{ $what_we_do_items['title'][$index] ?? '' }}" name="meta[what_we_do_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            </div>
+                            <div class="col-md-12 form-group mb-2">
+                                <textarea name="meta[what_we_do_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $what_we_do_items['description'][$index] ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="6" data-target=".what-we-do-items-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[what_we_do_items][itration][]" type="hidden">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[what_we_do_items][image][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group mb-2">
+                        <input value="" name="meta[what_we_do_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    </div>
+                    <div class="col-md-12 form-group mb-2">
+                        <textarea name="meta[what_we_do_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter description"></textarea>
                     </div>
                 </div>
             </div>
@@ -389,6 +688,11 @@
     </div>
 
     <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Description</label>
+        <textarea name="meta[events_description]" class="form-control" rows="3" placeholder="Enter description">{{ $events_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
         <label class="form-label">Post / Event Dropdown</label>
         <select class="form-control select2" name="meta[events_posts][]" multiple>
             @foreach($postCategoryOptions as $category)
@@ -397,6 +701,70 @@
                 </option>
             @endforeach
         </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Our Inspiration Section</h4>
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $our_inspiration_title }}" name="meta[our_inspiration_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $our_inspiration_subtitle }}" name="meta[our_inspiration_subtitle]" type="text" placeholder="Enter subtitle">
+    </div>
+
+    <div class="our-inspiration-key-highlights-target w-100">
+        @if(isset($our_inspiration_key_highlights['itration']) && is_array($our_inspiration_key_highlights['itration']))
+            @foreach($our_inspiration_key_highlights['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[our_inspiration_key_highlights][itration][]" type="hidden">
+                            <div class="col-md-12 form-group mb-2">
+                                <input value="{{ $our_inspiration_key_highlights['key_highlights'][$index] ?? '' }}" name="meta[our_inspiration_key_highlights][key_highlights][]" type="text" class="form-control" placeholder="Enter key highlight">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".our-inspiration-key-highlights-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[our_inspiration_key_highlights][itration][]" type="hidden">
+                    <div class="col-md-12 form-group mb-2">
+                        <input value="" name="meta[our_inspiration_key_highlights][key_highlights][]" type="text" class="form-control" placeholder="Enter key highlight">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add More</span>
+    </button>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Get Inspired Button URL</label>
+        <input class="form-control" value="{{ $our_inspiration_button_url }}" name="meta[our_inspiration_button_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>
 
@@ -415,26 +783,84 @@
         <label class="form-label">Subtitle</label>
         <input class="form-control" value="{{ $i_am_piece_subtitle }}" name="meta[i_am_piece_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
+
+    <div class="i-am-piece-items-target w-100">
+        @if(isset($i_am_piece_items['itration']) && is_array($i_am_piece_items['itration']))
+            @foreach($i_am_piece_items['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[i_am_piece_items][itration][]" type="hidden">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[i_am_piece_items][image][]" class="selected-files" value="{{ $i_am_piece_items['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group mb-2">
+                                <input value="{{ $i_am_piece_items['title'][$index] ?? '' }}" name="meta[i_am_piece_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            </div>
+                            <div class="col-md-12 form-group mb-2">
+                                <textarea name="meta[i_am_piece_items][description][]" class="form-control" rows="3" placeholder="Enter description">{{ $i_am_piece_items['description'][$index] ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="3" data-target=".i-am-piece-items-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[i_am_piece_items][itration][]" type="hidden">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[i_am_piece_items][image][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group mb-2">
+                        <input value="" name="meta[i_am_piece_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    </div>
+                    <div class="col-md-12 form-group mb-2">
+                        <textarea name="meta[i_am_piece_items][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add More</span>
+    </button>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <hr>
         <h4 class="text-primary">Support Section</h4>
-    </div>
-
-    <div class="col-md-12">
-        <label class="form-label">Image</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $support_image }}" type="hidden" name="meta[support_image]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
     </div>
 
     <div class="col-md-12 form-group mb-2">
@@ -447,6 +873,20 @@
         <textarea name="meta[support_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $support_description }}</textarea>
     </div>
 
+    <div class="col-md-12">
+        <label class="form-label">Joined Text Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $support_image }}" type="hidden" name="meta[support_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+    
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Joined Text</label>
         <input class="form-control" value="{{ $support_joined_text }}" name="meta[support_joined_text]" type="text" placeholder="Joined by 45,000+ donors">
@@ -543,6 +983,8 @@
     </button>
 </div>
 
+{{-- Engagement Section --}}
+@if(false)
 <div class="row">
     <div class="col-md-12">
         <hr>
@@ -612,3 +1054,4 @@
         <span class="ml-2">Add More</span>
     </button>
 </div>
+@endif

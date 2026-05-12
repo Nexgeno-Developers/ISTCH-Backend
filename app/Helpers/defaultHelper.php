@@ -188,6 +188,14 @@ if (!function_exists('getPageLayouts')) {
                 'label' => 'Contact',
                 'description' => 'Contact page layout.',
             ],
+            'our-inspiration' => [
+                'label' => 'Our Inspiration',
+                'description' => 'CMS layout for the Our Inspiration page.',
+            ],
+            'i-am-peace' => [
+                'label' => 'I Am Peace',
+                'description' => 'CMS layout for the I Am Peace page.',
+            ],
 
         ];
 
