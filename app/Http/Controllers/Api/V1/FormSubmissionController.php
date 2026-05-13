@@ -17,7 +17,7 @@ class FormSubmissionController extends Controller
      *
      * Expected:
      * - `form_name`
-     * - `name`, `email`, `phone` (depending on form_name rules)
+     * - `name` or `full_name`, `email`, `phone` (depending on form_name rules)
      * - Any other validated scalar fields as per `getValidationRules()`
      * - Uploaded files as top-level multipart form-data fields (e.g. `image`, `resume`, `pdf`, etc.)
      *
@@ -43,9 +43,9 @@ class FormSubmissionController extends Controller
         $companyId = $request->input('company_id') ?? 1;
 
         // Keep parity with your web controller: store only validated scalar fields
-        // (excluding name/email/phone/form_name/company_id).
+        // (excluding name/full_name/email/phone/form_name/company_id).
         $formData = collect($validatedData)
-            ->except(['form_name', 'name', 'email', 'phone'])
+            ->except(['form_name', 'name', 'full_name', 'email', 'phone', 'company_id'])
             ->toArray();
 
         // Add uploaded files (multipart) into form_data under their input field name.
@@ -62,6 +62,10 @@ class FormSubmissionController extends Controller
         }
 
         $name = $request->input('name');
+
+        if (empty($name)) {
+            $name = $request->input('full_name');
+        }
 
         if (empty($name)) {
             $first = $request->input('first_name') ?? '';
@@ -82,7 +86,9 @@ class FormSubmissionController extends Controller
         //Keep the same behavior as the web flow (send email to your configured recipient).
         $recipientEmail = [config('custom.from_email')];
         try {
-            Mail::to($recipientEmail)->send(new FormSubmissionMail($formName, array_merge($validatedData, $formData)));
+            Mail::to($recipientEmail)->send(new FormSubmissionMail($formName, array_merge($validatedData, $formData, [
+                'name' => $name,
+            ])));
         } catch (\Throwable $e) {
             // Avoid failing the submission if email fails.
             logger('Form submission mail failed: ' . $e->getMessage());
@@ -173,7 +179,7 @@ class FormSubmissionController extends Controller
             case 'volunteers_application':
                 return [
                     'form_name' => 'required|max:50',
-                    'name' => 'required|string|max:50',
+                    'full_name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
                     'age' => 'required|integer|min:1|max:120',
@@ -189,7 +195,7 @@ class FormSubmissionController extends Controller
             case 'ambassador_application':
                 return [
                     'form_name' => 'required|max:50',
-                    'name' => 'required|string|max:50',
+                    'full_name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
                     'age' => 'required|integer|min:1|max:120',
