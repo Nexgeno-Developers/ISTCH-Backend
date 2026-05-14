@@ -28,6 +28,7 @@ class PageController extends Controller
         'breadcrumb_image',
         'banner_desktop_image',
         'banner_mobile_image',
+        'genesis_image',
         'why_peace_needs_image',
         'our_approach_images',
         'vision_image',

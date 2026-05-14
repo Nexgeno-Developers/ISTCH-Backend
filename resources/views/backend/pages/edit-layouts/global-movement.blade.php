@@ -17,7 +17,7 @@
     $leadership_key_points = $metaArray('leadership_key_points');
 
     $engage_title = $metaValue('engage_title');
-    $engage_subtitle = $metaValue('engage_subtitle');
+    $engage_description = $metaValue('engage_description');
     $engage_items = $metaArray('engage_items');
 
     $donate_title = $metaValue('donate_title');
@@ -126,8 +126,8 @@
     </div>
 
     <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Subtitle</label>
-        <input class="form-control" value="{{ $engage_subtitle }}" name="meta[engage_subtitle]" type="text" placeholder="Enter subtitle">
+        <label class="form-label">Description</label>
+        <textarea name="meta[engage_description]" class="form-control" rows="4" placeholder="Enter description">{{ $engage_description }}</textarea>
     </div>
 
     <div class="engage-items-target w-100">

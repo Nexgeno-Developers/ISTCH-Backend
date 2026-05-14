@@ -12,6 +12,7 @@
 
     $genesis_title = $metaValue('genesis_title');
     $genesis_subtitle = $metaValue('genesis_subtitle');
+    $genesis_image = $metaValue('genesis_image');
     $genesis_description = $metaValue('genesis_description');
 
     $quote_title = $metaValue('quote_title');
@@ -63,6 +64,20 @@
         <input class="form-control" value="{{ $genesis_subtitle }}" name="meta[genesis_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
 
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $genesis_image }}" type="hidden" name="meta[genesis_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
         <textarea name="meta[genesis_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $genesis_description }}</textarea>
@@ -94,7 +109,7 @@
 
     <div class="col-md-6 form-group mb-2">
         <label class="form-label">Vision Description</label>
-        <input class="form-control" value="{{ $vision_description }}" name="meta[vision_description]" type="text" placeholder="Enter vision description">
+        <textarea name="meta[vision_description]" class="form-control text-editor" rows="4" placeholder="Enter vision description">{{ $vision_description }}</textarea>
     </div>
 
     <div class="col-md-6 form-group mb-2">
@@ -104,7 +119,7 @@
 
     <div class="col-md-6 form-group mb-2">
         <label class="form-label">Mission Description</label>
-        <input class="form-control" value="{{ $mission_description }}" name="meta[mission_description]" type="text" placeholder="Enter mission description">
+        <textarea name="meta[mission_description]" class="form-control text-editor" rows="4" placeholder="Enter mission description">{{ $mission_description }}</textarea>
     </div>
 </div>
 

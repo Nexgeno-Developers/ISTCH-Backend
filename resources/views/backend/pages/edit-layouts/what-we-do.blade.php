@@ -71,6 +71,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group mb-2">
+                                <input value="{{ $hero_items['call_to_action_text'][$index] ?? '' }}" name="meta[hero_items][call_to_action_text][]" type="text" class="form-control" placeholder="Enter call to action text">
+                            </div>
+                            <div class="col-md-6 form-group mb-2">
                                 <input value="{{ $hero_items['navigation_url'][$index] ?? '' }}" name="meta[hero_items][navigation_url][]" type="text" class="form-control" placeholder="Enter navigation URL">
                             </div>
                             <div class="col-md-12">
@@ -122,6 +125,9 @@
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>
+                    </div>
+                    <div class="col-md-6 form-group mb-2">
+                        <input value="" name="meta[hero_items][call_to_action_text][]" type="text" class="form-control" placeholder="Enter call to action text">
                     </div>
                     <div class="col-md-6 form-group mb-2">
                         <input value="" name="meta[hero_items][navigation_url][]" type="text" class="form-control" placeholder="Enter navigation URL">
