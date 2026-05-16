@@ -81,6 +81,7 @@ class PageController extends Controller
         'what_we_do_items',
         'our_inspiration_key_highlights',
         'i_am_piece_items',
+        'financial_support_items',
         'highlights',
     ];
 

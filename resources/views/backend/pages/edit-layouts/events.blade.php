@@ -23,7 +23,6 @@
     $global_peace_title = $metaValue('global_peace_title');
     $global_peace_description = $metaValue('global_peace_description');
     $global_peace_image = $metaValue('global_peace_image');
-    $global_peace_gallery_images = $metaValue('global_peace_gallery_images');
 
     $postCategoryOptions = \App\Models\Category::query()
         ->where('company_id', $pageData->company_id)
@@ -130,17 +129,4 @@
         </div>
     </div>
 
-    <div class="col-md-12">
-        <label class="form-label">Gallery Images</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $global_peace_gallery_images }}" type="hidden" name="meta[global_peace_gallery_images]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
-    </div>
 </div>
