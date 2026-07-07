@@ -15,6 +15,7 @@
     $financial_support_title = $metaValue('financial_support_title');
     $financial_support_description = $metaValue('financial_support_description');
     $financial_support_content = $metaValue('financial_support_content');
+    $financial_support_image = $metaValue('financial_support_image');
     $financial_support_items = $metaArray('financial_support_items');
 
     if (!isset($financial_support_items['image']) && isset($financial_support_items['icon'])) {
@@ -22,7 +23,7 @@
     }
 
     $join_title = $metaValue('join_title');
-    $join_bg_image = $metaValue('join_bg_image');
+    $join_navigation_text = $metaValue('join_navigation_text');
     $join_navigation_url = $metaValue('join_navigation_url');
 @endphp
 
@@ -132,6 +133,20 @@
         <label class="form-label">Content</label>
         <textarea name="meta[financial_support_content]" class="form-control text-editor" rows="4" placeholder="Enter content">{{ $financial_support_content }}</textarea>
     </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $financial_support_image }}" type="hidden" name="meta[financial_support_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -145,18 +160,9 @@
         <input class="form-control" value="{{ $join_title }}" name="meta[join_title]" type="text" placeholder="Enter title">
     </div>
 
-    <div class="col-md-12">
-        <label class="form-label">BG Image</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $join_bg_image }}" type="hidden" name="meta[join_bg_image]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Join Navigation Text</label>
+        <input class="form-control" value="{{ $join_navigation_text }}" name="meta[join_navigation_text]" type="text" placeholder="Enter navigation text">
     </div>
 
     <div class="col-md-12 form-group mb-2">

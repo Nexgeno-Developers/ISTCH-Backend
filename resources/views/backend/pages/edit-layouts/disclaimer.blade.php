@@ -48,7 +48,7 @@
                     <div class="col-md-11">
                         <div class="row">
                             <input value="{{ $index }}" name="meta[quick_navigation_items][itration][]" type="hidden">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                         <div class="input-group-prepend">
@@ -60,8 +60,11 @@
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6 form-group mb-2">
+                            <div class="col-md-4 form-group mb-2">
                                 <input value="{{ $quick_navigation_items['title'][$index] ?? '' }}" name="meta[quick_navigation_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            </div>
+                            <div class="col-md-4 form-group mb-2">
+                                <input value="{{ $quick_navigation_items['url'][$index] ?? '' }}" name="meta[quick_navigation_items][url][]" type="text" class="form-control" placeholder="Enter URL">
                             </div>
                         </div>
                     </div>
@@ -80,7 +83,7 @@
             <div class="col-md-11">
                 <div class="row">
                     <input value="data" name="meta[quick_navigation_items][itration][]" type="hidden">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                 <div class="input-group-prepend">
@@ -92,8 +95,11 @@
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-6 form-group mb-2">
+                    <div class="col-md-4 form-group mb-2">
                         <input value="" name="meta[quick_navigation_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    </div>
+                    <div class="col-md-4 form-group mb-2">
+                        <input value="" name="meta[quick_navigation_items][url][]" type="text" class="form-control" placeholder="Enter URL">
                     </div>
                 </div>
             </div>

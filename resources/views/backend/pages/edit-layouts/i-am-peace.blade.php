@@ -11,20 +11,26 @@
     };
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
+    $breadcrumb_subtitle = $metaValue('breadcrumb_subtitle');
 
-    $section_one_title = $metaValue('section_one_title');
     $section_one_description = $metaValue('section_one_description');
-    $commonwealth_description = $metaValue('commonwealth_description');
-    $thought_leadership_description = $metaValue('thought_leadership_description');
+    $section_one_image = $metaValue('section_one_image');
+    $section_one_button_one_text = $metaValue('section_one_button_one_text');
+    $section_one_button_one_url = $metaValue('section_one_button_one_url');
+    $section_one_button_two_text = $metaValue('section_one_button_two_text');
+    $section_one_button_two_url = $metaValue('section_one_button_two_url');
 
     $global_movements_title = $metaValue('global_movements_title');
     $global_movements_subtitle = $metaValue('global_movements_subtitle');
     $global_movements_description = $metaValue('global_movements_description');
-    $global_movements_first_image = $metaValue('global_movements_first_image');
-    $global_movements_first_content = $metaValue('global_movements_first_content');
-    $global_movements_second_image = $metaValue('global_movements_second_image');
-    $global_movements_second_content = $metaValue('global_movements_second_content');
+    $power_of_peace_title = $metaValue('power_of_peace_title');
+    $power_of_peace_first_content = $metaValue('power_of_peace_first_content');
+    $power_of_peace_second_content = $metaValue('power_of_peace_second_content');
+    $power_of_peace_third_content = $metaValue('power_of_peace_third_content');
+    $power_of_peace_fourth_content = $metaValue('power_of_peace_fourth_content');
+    $power_of_peace_fifth_content = $metaValue('power_of_peace_fifth_content');
 
+    $where_peace_bg_image = $metaValue('where_peace_bg_image');
     $where_peace_title = $metaValue('where_peace_title');
     $where_peace_description = $metaValue('where_peace_description');
     $build_peace_items = $metaArray('build_peace_items');
@@ -44,6 +50,11 @@
         <label class="form-label">Title</label>
         <input class="form-control" value="{{ $breadcrumb_title }}" name="meta[breadcrumb_title]" type="text" placeholder="Enter breadcrumb title">
     </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">SubTitle</label>
+        <input class="form-control" value="{{ $breadcrumb_subtitle }}" name="meta[breadcrumb_subtitle]" type="text" placeholder="Enter breadcrumb subtitle">
+    </div>
 </div>
 
 <div class="row">
@@ -53,23 +64,42 @@
     </div>
 
     <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $section_one_title }}" name="meta[section_one_title]" type="text" placeholder="Enter title">
-    </div>
-
-    <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
         <textarea name="meta[section_one_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $section_one_description }}</textarea>
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Commonwealth</label>
-        <textarea name="meta[commonwealth_description]" class="form-control text-editor" rows="4" placeholder="Enter Commonwealth content">{{ $commonwealth_description }}</textarea>
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $section_one_image }}" type="hidden" name="meta[section_one_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Global Peace Gatherings & Thought Leadership</label>
-        <textarea name="meta[thought_leadership_description]" class="form-control text-editor" rows="4" placeholder="Enter thought leadership content">{{ $thought_leadership_description }}</textarea>
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button 1 Text</label>
+        <input class="form-control" value="{{ $section_one_button_one_text }}" name="meta[section_one_button_one_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button 1 URL</label>
+        <input class="form-control" value="{{ $section_one_button_one_url }}" name="meta[section_one_button_one_url]" type="text" placeholder="Enter button URL">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button 2 Text</label>
+        <input class="form-control" value="{{ $section_one_button_two_text }}" name="meta[section_one_button_two_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button 2 URL</label>
+        <input class="form-control" value="{{ $section_one_button_two_url }}" name="meta[section_one_button_two_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>
 
@@ -93,43 +123,63 @@
         <label class="form-label">Description</label>
         <textarea name="meta[global_movements_description]" class="form-control" rows="4" placeholder="Enter description">{{ $global_movements_description }}</textarea>
     </div>
+</div>
 
+<div class="row">
     <div class="col-md-12">
-        <label class="form-label">First Image</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $global_movements_first_image }}" type="hidden" name="meta[global_movements_first_image]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
+        <hr>
+        <h4 class="text-primary">Power Of Peace</h4>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $power_of_peace_title }}" name="meta[power_of_peace_title]" type="text" placeholder="Enter title">
     </div>
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">First Content</label>
-        <textarea name="meta[global_movements_first_content]" class="form-control text-editor" rows="4" placeholder="Enter first content">{{ $global_movements_first_content }}</textarea>
+        <textarea name="meta[power_of_peace_first_content]" class="form-control text-editor" rows="4" placeholder="Enter first content">{{ $power_of_peace_first_content }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Second Content</label>
+        <textarea name="meta[power_of_peace_second_content]" class="form-control text-editor" rows="4" placeholder="Enter second content">{{ $power_of_peace_second_content }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Third Content</label>
+        <textarea name="meta[power_of_peace_third_content]" class="form-control text-editor" rows="4" placeholder="Enter third content">{{ $power_of_peace_third_content }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Fourth Content</label>
+        <textarea name="meta[power_of_peace_fourth_content]" class="form-control text-editor" rows="4" placeholder="Enter fourth content">{{ $power_of_peace_fourth_content }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Fifth Content</label>
+        <textarea name="meta[power_of_peace_fifth_content]" class="form-control text-editor" rows="4" placeholder="Enter fifth content">{{ $power_of_peace_fifth_content }}</textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Where Peace Becomes Real</h4>
     </div>
 
     <div class="col-md-12">
-        <label class="form-label">Second Image</label>
+        <label class="form-label">BG Image</label>
         <div class="form-group mb-2">
             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                 <div class="input-group-prepend">
                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                 </div>
                 <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $global_movements_second_image }}" type="hidden" name="meta[global_movements_second_image]" class="selected-files">
+                <input value="{{ $where_peace_bg_image }}" type="hidden" name="meta[where_peace_bg_image]" class="selected-files">
             </div>
             <div class="file-preview box sm"></div>
         </div>
-    </div>
-
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Second Content</label>
-        <textarea name="meta[global_movements_second_content]" class="form-control text-editor" rows="4" placeholder="Enter second content">{{ $global_movements_second_content }}</textarea>
     </div>
 
     <div class="col-md-12 form-group mb-2 mt-2">

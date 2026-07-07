@@ -11,18 +11,23 @@
     };
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
+    $breadcrumb_subtitle = $metaValue('breadcrumb_subtitle');
     $hero_title = $metaValue('hero_title');
 
     $vision_image = $metaValue('vision_image');
     $vision_title = $metaValue('vision_title');
     $vision_description = $metaValue('vision_description');
-    $vision_person_name = $metaValue('vision_person_name');
+    $vision_person_image = $metaValue('vision_person_image');
 
     $impact_items = $metaArray('impact_items');
 
     $philosophy_title = $metaValue('philosophy_title');
     $philosophy_subtitle = $metaValue('philosophy_subtitle');
     $philosophy_items = $metaArray('philosophy_items');
+
+    $footer_title = $metaValue('footer_title');
+    $footer_button_text = $metaValue('footer_button_text');
+    $footer_button_url = $metaValue('footer_button_url');
 @endphp
 
 <div class="row">
@@ -34,6 +39,11 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Breadcrumb Title</label>
         <input class="form-control" value="{{ $breadcrumb_title }}" name="meta[breadcrumb_title]" type="text" placeholder="Enter breadcrumb title">
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Breadcrumb Subtitle</label>
+        <input class="form-control" value="{{ $breadcrumb_subtitle }}" name="meta[breadcrumb_subtitle]" type="text" placeholder="Enter breadcrumb subtitle">
     </div>
 </div>
 
@@ -67,9 +77,18 @@
         <textarea name="meta[vision_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $vision_description }}</textarea>
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Person Name</label>
-        <input class="form-control" value="{{ $vision_person_name }}" name="meta[vision_person_name]" type="text" placeholder="Enter person name">
+    <div class="col-md-12">
+        <label class="form-label">Person Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $vision_person_image }}" type="hidden" name="meta[vision_person_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
     </div>
 </div>
 
@@ -86,10 +105,22 @@
                     <div class="col-md-11">
                         <div class="row">
                             <input value="{{ $index }}" name="meta[impact_items][itration][]" type="hidden">
-                            <div class="col-md-6 form-group mb-2">
+                            <div class="col-md-4">
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[impact_items][image][]" class="selected-files" value="{{ $impact_items['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group mb-2">
                                 <input value="{{ $impact_items['title'][$index] ?? '' }}" name="meta[impact_items][title][]" type="text" class="form-control" placeholder="Enter title">
                             </div>
-                            <div class="col-md-6 form-group mb-2">
+                            <div class="col-md-4 form-group mb-2">
                                 <textarea name="meta[impact_items][description][]" class="form-control" rows="3" placeholder="Enter description">{{ $impact_items['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
@@ -109,10 +140,22 @@
             <div class="col-md-11">
                 <div class="row">
                     <input value="data" name="meta[impact_items][itration][]" type="hidden">
-                    <div class="col-md-6 form-group mb-2">
+                    <div class="col-md-4">
+                        <div class="form-group mb-2">
+                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                <input type="hidden" name="meta[impact_items][image][]" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group mb-2">
                         <input value="" name="meta[impact_items][title][]" type="text" class="form-control" placeholder="Enter title">
                     </div>
-                    <div class="col-md-6 form-group mb-2">
+                    <div class="col-md-4 form-group mb-2">
                         <textarea name="meta[impact_items][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
                     </div>
                 </div>
@@ -221,4 +264,26 @@
         <i class="ti ti-plus"></i>
         <span class="ml-2">Add Philosophy Item</span>
     </button>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Footer Section</h4>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $footer_title }}" name="meta[footer_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $footer_button_text }}" name="meta[footer_button_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $footer_button_url }}" name="meta[footer_button_url]" type="text" placeholder="Enter button URL">
+    </div>
 </div>
