@@ -23,8 +23,9 @@
     $collaborate_description = $metaValue('collaborate_description');
     $collaborate_items = $metaArray('collaborate_items');
 
-    $donate_title = $metaValue('donate_title');
-    $donate_navigation = $metaValue('donate_navigation');
+    $footer_title = $metaValue('footer_title');
+    $footer_button_text = $metaValue('footer_button_text');
+    $footer_button_url = $metaValue('footer_button_url');
 @endphp
 
 <div class="row">
@@ -167,16 +168,21 @@
 <div class="row">
     <div class="col-md-12">
         <hr>
-        <h4 class="text-primary">Donate Section</h4>
+        <h4 class="text-primary">Footer Section</h4>
     </div>
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $donate_title }}" name="meta[donate_title]" type="text" placeholder="Enter title">
+        <input class="form-control" value="{{ $footer_title }}" name="meta[footer_title]" type="text" placeholder="Enter title">
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Donate Navigation</label>
-        <input class="form-control" value="{{ $donate_navigation }}" name="meta[donate_navigation]" type="text" placeholder="Enter navigation URL">
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $footer_button_text }}" name="meta[footer_button_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $footer_button_url }}" name="meta[footer_button_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>

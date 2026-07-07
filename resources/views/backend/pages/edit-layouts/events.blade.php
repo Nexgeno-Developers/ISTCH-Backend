@@ -35,6 +35,10 @@
     $thought_description = $metaValue('thought_description');
     $thought_partner_with_us_button_url = $metaValue('thought_partner_with_us_button_url');
 
+    $footer_title = $metaValue('footer_title');
+    $footer_button_text = $metaValue('footer_button_text');
+    $footer_button_url = $metaValue('footer_button_url');
+
     $postCategoryOptions = \App\Models\Category::query()
         ->where('company_id', $pageData->company_id)
         ->where('is_active', 1)
@@ -215,5 +219,27 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Partner With Us Button URL</label>
         <input class="form-control" value="{{ $thought_partner_with_us_button_url }}" name="meta[thought_partner_with_us_button_url]" type="text" placeholder="Enter button URL">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Footer Section</h4>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $footer_title }}" name="meta[footer_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $footer_button_text }}" name="meta[footer_button_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $footer_button_url }}" name="meta[footer_button_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>
