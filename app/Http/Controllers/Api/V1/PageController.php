@@ -28,7 +28,9 @@ class PageController extends Controller
         'breadcrumb_image',
         'banner_desktop_image',
         'banner_mobile_image',
+        'partner_logos',
         'genesis_image',
+        'genesis_video',
         'why_peace_needs_image',
         'our_approach_images',
         'vision_image',
@@ -38,10 +40,22 @@ class PageController extends Controller
         'financial_support_icon',
         'global_peace_image',
         'global_peace_gallery_images',
+        'thought_videos',
+        'thought_images',
+        'video',
+        'images',
         'leadership_image',
         'support_image',
         'global_movements_first_image',
         'global_movements_second_image',
+    ];
+
+    private array $multipleUploadMetaKeys = [
+        'partner_logos',
+        'global_peace_image',
+        'thought_videos',
+        'thought_images',
+        'images',
     ];
 
     // Post reference keys
@@ -66,7 +80,6 @@ class PageController extends Controller
         'engagement_items',
         'our_actions',
         'core_values',
-        'teams',
         'collaborate_items',
         'engage_items',
         'leadership_key_points',
@@ -289,7 +302,7 @@ class PageController extends Controller
     {
         if (in_array($key, $this->uploadMetaKeys)) {
             return filled($value)
-                ? uploaded_asset_details_from_ids($value)
+                ? uploaded_asset_details_from_ids($value, null, !in_array($key, $this->multipleUploadMetaKeys))
                 : null;
         }
 

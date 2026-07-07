@@ -70,6 +70,8 @@
     $engagement_ambassador_navigation_url = $metaValue('engagement_ambassador_navigation_url');
     $engagement_items = $metaArray('engagement_items');
 
+    $partner_logos = $metaValue('partner_logos');
+
     $postCategoryOptions = \App\Models\Category::query()
         ->where('company_id', $pageData->company_id)
         ->where('is_active', 1)
@@ -1055,3 +1057,24 @@
     </button>
 </div>
 @endif
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Our Valued Partners Section</h4>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Partner Logos</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $partner_logos }}" type="hidden" name="meta[partner_logos]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+</div>

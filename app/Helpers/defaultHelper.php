@@ -151,7 +151,11 @@ if (!function_exists('getPageLayouts')) {
             'example' => [
                 'label' => 'Example',
                 'description' => 'Example layout to demonstrate layout structure and fields.',
-            ],            
+            ],
+            'testimonials' => [
+                'label' => 'Testimonials',
+                'description' => 'Testimonials page layout.',
+            ],
             'home' => [
                 'label' => 'Home',
                 'description' => 'Homepage layout for the website.',
@@ -191,6 +195,14 @@ if (!function_exists('getPageLayouts')) {
             'our-inspiration' => [
                 'label' => 'Our Inspiration',
                 'description' => 'CMS layout for the Our Inspiration page.',
+            ],
+            'our-team' => [
+                'label' => 'Our Team',
+                'description' => 'CMS layout for the Our Team page.',
+            ],
+            'disclaimer' => [
+                'label' => 'Disclaimer',
+                'description' => 'CMS layout for the Disclaimer page.',
             ],
             'i-am-peace' => [
                 'label' => 'I Am Peace',

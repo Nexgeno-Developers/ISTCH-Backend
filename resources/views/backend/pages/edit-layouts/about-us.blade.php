@@ -13,6 +13,7 @@
     $genesis_title = $metaValue('genesis_title');
     $genesis_subtitle = $metaValue('genesis_subtitle');
     $genesis_image = $metaValue('genesis_image');
+    $genesis_video = $metaValue('genesis_video');
     $genesis_description = $metaValue('genesis_description');
 
     $quote_title = $metaValue('quote_title');
@@ -25,11 +26,6 @@
     $core_values_title = $metaValue('core_values_title');
     $core_values_subtitle = $metaValue('core_values_subtitle');
     $core_values = $metaArray('core_values');
-
-    $teams_title = $metaValue('teams_title');
-    $teams_subtitle = $metaValue('teams_subtitle');
-    $teams_description = $metaValue('teams_description');
-    $teams = $metaArray('teams');
 
     $donate_title = $metaValue('donate_title');
     $donate_navigation = $metaValue('donate_navigation');
@@ -73,6 +69,20 @@
                 </div>
                 <div class="form-control file-amount">{{ __('Choose File') }}</div>
                 <input value="{{ $genesis_image }}" type="hidden" name="meta[genesis_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Video</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="video" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $genesis_video }}" type="hidden" name="meta[genesis_video]" class="selected-files">
             </div>
             <div class="file-preview box sm"></div>
         </div>
@@ -198,100 +208,6 @@
                     </div>
                     <div class="col-md-12 form-group mb-2">
                         <textarea name="meta[core_values][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-1 btn-dynamic-fields">
-                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-        </div>'>
-        <i class="ti ti-plus"></i>
-        <span class="ml-2">Add More</span>
-    </button>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <hr>
-        <h4 class="text-primary">Teams Section</h4>
-    </div>
-
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $teams_title }}" name="meta[teams_title]" type="text" placeholder="Enter title">
-    </div>
-
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Subtitle</label>
-        <input class="form-control" value="{{ $teams_subtitle }}" name="meta[teams_subtitle]" type="text" placeholder="Enter subtitle">
-    </div>
-
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Description</label>
-        <textarea name="meta[teams_description]" class="form-control" rows="3" placeholder="Enter description">{{ $teams_description }}</textarea>
-    </div>
-
-    <div class="teams-target w-100">
-        @if(isset($teams['itration']) && is_array($teams['itration']))
-            @foreach($teams['itration'] as $index => $itration)
-                <div class="row remove-parent">
-                    <div class="col-md-11">
-                        <div class="row">
-                            <input value="{{ $index }}" name="meta[teams][itration][]" type="hidden">
-                            <div class="col-md-4">
-                                <div class="form-group mb-2">
-                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                                        </div>
-                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                        <input type="hidden" name="meta[teams][image][]" class="selected-files" value="{{ $teams['image'][$index] ?? '' }}">
-                                    </div>
-                                    <div class="file-preview box sm"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 form-group mb-2">
-                                <input value="{{ $teams['name'][$index] ?? '' }}" name="meta[teams][name][]" type="text" class="form-control" placeholder="Enter name">
-                            </div>
-                            <div class="col-md-4 form-group mb-2">
-                                <input value="{{ $teams['designation'][$index] ?? '' }}" name="meta[teams][designation][]" type="text" class="form-control" placeholder="Enter designation">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1 btn-dynamic-fields">
-                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
-                            <i class="ti ti-x"></i>
-                        </button>
-                    </div>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".teams-target" data-content='
-        <div class="row remove-parent">
-            <div class="col-md-11">
-                <div class="row">
-                    <input value="data" name="meta[teams][itration][]" type="hidden">
-                    <div class="col-md-4">
-                        <div class="form-group mb-2">
-                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                                </div>
-                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                <input type="hidden" name="meta[teams][image][]" class="selected-files">
-                            </div>
-                            <div class="file-preview box sm"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 form-group mb-2">
-                        <input value="" name="meta[teams][name][]" type="text" class="form-control" placeholder="Enter name">
-                    </div>
-                    <div class="col-md-4 form-group mb-2">
-                        <input value="" name="meta[teams][designation][]" type="text" class="form-control" placeholder="Enter designation">
                     </div>
                 </div>
             </div>

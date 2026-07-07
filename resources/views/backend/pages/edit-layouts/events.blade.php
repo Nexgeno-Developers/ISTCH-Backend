@@ -11,18 +11,29 @@
     };
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
+    $breadcrumb_subtitle = $metaValue('breadcrumb_subtitle');
 
     $hero_title = $metaValue('hero_title');
+    $hero_bottom_title = $metaValue('hero_bottom_title');
     $hero_description = $metaValue('hero_description');
     $hero_post_categories = $metaArray('hero_post_categories');
 
     $upcoming_convocations_title = $metaValue('upcoming_convocations_title');
     $upcoming_convocations_description = $metaValue('upcoming_convocations_description');
+    $upcoming_convocations_bottom_title = $metaValue('upcoming_convocations_bottom_title');
     $upcoming_convocations_post_categories = $metaArray('upcoming_convocations_post_categories');
 
     $global_peace_title = $metaValue('global_peace_title');
     $global_peace_description = $metaValue('global_peace_description');
     $global_peace_image = $metaValue('global_peace_image');
+
+    $thought_title = $metaValue('thought_title');
+    $thought_subtitle = $metaValue('thought_subtitle');
+    $thought_videos = $metaValue('thought_videos');
+    $thought_know_more_button_url = $metaValue('thought_know_more_button_url');
+    $thought_images = $metaValue('thought_images');
+    $thought_description = $metaValue('thought_description');
+    $thought_partner_with_us_button_url = $metaValue('thought_partner_with_us_button_url');
 
     $postCategoryOptions = \App\Models\Category::query()
         ->where('company_id', $pageData->company_id)
@@ -41,6 +52,11 @@
         <label class="form-label">Title</label>
         <input class="form-control" value="{{ $breadcrumb_title }}" name="meta[breadcrumb_title]" type="text" placeholder="Enter title">
     </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $breadcrumb_subtitle }}" name="meta[breadcrumb_subtitle]" type="text" placeholder="Enter subtitle">
+    </div>
 </div>
 
 <div class="row">
@@ -56,7 +72,12 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
-        <textarea name="meta[hero_description]" class="form-control" rows="4" placeholder="Enter description">{{ $hero_description }}</textarea>
+        <textarea name="meta[hero_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $hero_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Bottom Title</label>
+        <input class="form-control" value="{{ $hero_bottom_title }}" name="meta[hero_bottom_title]" type="text" placeholder="Enter bottom title">
     </div>
 
     <div class="col-md-12 form-group mb-2">
@@ -84,7 +105,12 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
-        <textarea name="meta[upcoming_convocations_description]" class="form-control" rows="4" placeholder="Enter description">{{ $upcoming_convocations_description }}</textarea>
+        <textarea name="meta[upcoming_convocations_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $upcoming_convocations_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Bottom Title</label>
+        <input class="form-control" value="{{ $upcoming_convocations_bottom_title }}" name="meta[upcoming_convocations_bottom_title]" type="text" placeholder="Enter bottom title">
     </div>
 
     <div class="col-md-12 form-group mb-2">
@@ -116,9 +142,9 @@
     </div>
 
     <div class="col-md-12">
-        <label class="form-label">Image</label>
+        <label class="form-label">Images</label>
         <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
                 <div class="input-group-prepend">
                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                 </div>
@@ -129,4 +155,65 @@
         </div>
     </div>
 
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Thought Section</h4>
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $thought_title }}" name="meta[thought_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $thought_subtitle }}" name="meta[thought_subtitle]" type="text" placeholder="Enter subtitle">
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Videos</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="video" data-multiple="true">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $thought_videos }}" type="hidden" name="meta[thought_videos]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+            <small class="form-text text-muted">Maximum 3 videos.</small>
+        </div>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Know More Button URL</label>
+        <input class="form-control" value="{{ $thought_know_more_button_url }}" name="meta[thought_know_more_button_url]" type="text" placeholder="Enter button URL">
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Images</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $thought_images }}" type="hidden" name="meta[thought_images]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Description</label>
+        <textarea name="meta[thought_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $thought_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Partner With Us Button URL</label>
+        <input class="form-control" value="{{ $thought_partner_with_us_button_url }}" name="meta[thought_partner_with_us_button_url]" type="text" placeholder="Enter button URL">
+    </div>
 </div>
