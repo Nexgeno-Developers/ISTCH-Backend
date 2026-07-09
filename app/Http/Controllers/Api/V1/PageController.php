@@ -43,6 +43,7 @@ class PageController extends Controller
         'global_presence_image',
         'financial_support_icon',
         'financial_support_image',
+        'global_volunteer_image',
         'global_volunteer_images',
         'global_peace_image',
         'global_peace_gallery_images',
@@ -92,6 +93,7 @@ class PageController extends Controller
         'engage_items',
         'leadership_key_points',
         'thought_leadership_items',
+        'thought_video_urls',
         'board_members',
         'patron_members',
         'charter_council_members',
@@ -112,6 +114,25 @@ class PageController extends Controller
         'i_am_piece_items',
         'financial_support_items',
         'highlights',
+    ];
+
+    private array $removedHomeMetaKeys = [
+        'banner_active_community_count',
+        'i_am_piece_title',
+        'i_am_piece_subtitle',
+        'i_am_piece_items',
+    ];
+
+    private array $removedAboutUsMetaKeys = [
+        'genesis_title',
+    ];
+
+    private array $removedOurInspirationMetaKeys = [
+        'vision_person_image',
+    ];
+
+    private array $removedEventsMetaKeys = [
+        'thought_videos',
     ];
 
     /**
@@ -277,6 +298,12 @@ class PageController extends Controller
             'company_id' => $page->company_id,
 
             'meta' => $page->meta
+                ->reject(function ($m) use ($page) {
+                    return ($page->layout === 'home' && in_array($m->meta_key, $this->removedHomeMetaKeys, true))
+                        || ($page->layout === 'about-us' && in_array($m->meta_key, $this->removedAboutUsMetaKeys, true))
+                        || ($page->layout === 'our-inspiration' && in_array($m->meta_key, $this->removedOurInspirationMetaKeys, true))
+                        || ($page->layout === 'events' && in_array($m->meta_key, $this->removedEventsMetaKeys, true));
+                })
                 ->mapWithKeys(function ($m) {
 
                     $value = $m->meta_value;

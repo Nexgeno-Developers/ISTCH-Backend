@@ -110,16 +110,6 @@ class PageController extends Controller
             'seo_schema' => 'nullable|string',
             'is_active' => 'required|boolean',
             'company_id' => 'required|exists:companies,id',
-            'meta.thought_videos' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    $ids = array_filter(array_map('trim', explode(',', (string) $value)));
-
-                    if (count($ids) > 3) {
-                        $fail('The thought videos field may not have more than 3 videos.');
-                    }
-                },
-            ],
         ]);
     
         try {
@@ -209,16 +199,6 @@ class PageController extends Controller
             'seo_schema' => 'nullable|string',
             'is_active' => 'required|boolean',
             'company_id' => 'required|exists:companies,id',
-            'meta.thought_videos' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    $ids = array_filter(array_map('trim', explode(',', (string) $value)));
-
-                    if (count($ids) > 3) {
-                        $fail('The thought videos field may not have more than 3 videos.');
-                    }
-                },
-            ],
         ]);
     
         try {

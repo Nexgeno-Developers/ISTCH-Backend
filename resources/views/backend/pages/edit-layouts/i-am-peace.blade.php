@@ -33,6 +33,8 @@
     $where_peace_bg_image = $metaValue('where_peace_bg_image');
     $where_peace_title = $metaValue('where_peace_title');
     $where_peace_description = $metaValue('where_peace_description');
+    $where_peace_button_text = $metaValue('where_peace_button_text');
+    $where_peace_button_url = $metaValue('where_peace_button_url');
     $build_peace_items = $metaArray('build_peace_items');
 
     $cta_title = $metaValue('cta_title');
@@ -251,6 +253,16 @@
         <i class="ti ti-plus"></i>
         <span class="ml-2">Add Where Peace Item</span>
     </button>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $where_peace_button_text }}" name="meta[where_peace_button_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $where_peace_button_url }}" name="meta[where_peace_button_url]" type="text" placeholder="Enter button URL">
+    </div>
 </div>
 
 <div class="row">
@@ -265,12 +277,12 @@
     </div>
 
     <div class="col-md-6 form-group mb-2">
-        <label class="form-label">DONATE NOW Button URL</label>
-        <input class="form-control" value="{{ $cta_donate_url }}" name="meta[cta_donate_url]" type="text" placeholder="Enter donate button URL">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $cta_donate_url }}" name="meta[cta_donate_url]" type="text" placeholder="Enter button text">
     </div>
 
     <div class="col-md-6 form-group mb-2">
-        <label class="form-label">VOLUNTEER WITH US Button URL</label>
-        <input class="form-control" value="{{ $cta_volunteer_url }}" name="meta[cta_volunteer_url]" type="text" placeholder="Enter volunteer button URL">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $cta_volunteer_url }}" name="meta[cta_volunteer_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>

@@ -10,7 +10,6 @@
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
 
-    $genesis_title = $metaValue('genesis_title');
     $genesis_subtitle = $metaValue('genesis_subtitle');
     $genesis_image = $metaValue('genesis_image');
     $genesis_video = $metaValue('genesis_video');
@@ -50,14 +49,9 @@
         <h4 class="text-primary">Genesis Section</h4>
     </div>
 
-    <div class="col-md-6 form-group mb-2">
+    <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $genesis_title }}" name="meta[genesis_title]" type="text" placeholder="Enter title">
-    </div>
-
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Subtitle</label>
-        <input class="form-control" value="{{ $genesis_subtitle }}" name="meta[genesis_subtitle]" type="text" placeholder="Enter subtitle">
+        <input class="form-control" value="{{ $genesis_subtitle }}" name="meta[genesis_subtitle]" type="text" placeholder="Enter title">
     </div>
 
     <div class="col-md-12">
@@ -225,7 +219,7 @@
 <div class="row">
     <div class="col-md-12">
         <hr>
-        <h4 class="text-primary">Donate Section</h4>
+        <h4 class="text-primary">Footer Section</h4>
     </div>
 
     <div class="col-md-12 form-group mb-2">
@@ -234,12 +228,12 @@
     </div>
 
     <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Donate Navigation</label>
-        <input class="form-control" value="{{ $donate_navigation }}" name="meta[donate_navigation]" type="text" placeholder="Enter navigation URL">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $donate_navigation }}" name="meta[donate_navigation]" type="text" placeholder="Enter button text">
     </div>
 
     <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Volunteer Navigation</label>
-        <input class="form-control" value="{{ $volunteer_navigation }}" name="meta[volunteer_navigation]" type="text" placeholder="Enter navigation URL">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $volunteer_navigation }}" name="meta[volunteer_navigation]" type="text" placeholder="Enter button URL">
     </div>
 </div>

@@ -29,7 +29,7 @@
 
     $thought_title = $metaValue('thought_title');
     $thought_subtitle = $metaValue('thought_subtitle');
-    $thought_videos = $metaValue('thought_videos');
+    $thought_video_urls = $metaArray('thought_video_urls');
     $thought_know_more_button_url = $metaValue('thought_know_more_button_url');
     $thought_images = $metaValue('thought_images');
     $thought_description = $metaValue('thought_description');
@@ -177,20 +177,49 @@
         <input class="form-control" value="{{ $thought_subtitle }}" name="meta[thought_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
 
-    <div class="col-md-12">
-        <label class="form-label">Videos</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="video" data-multiple="true">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+    <div class="thought-video-urls-target w-100">
+        @if(isset($thought_video_urls['itration']) && is_array($thought_video_urls['itration']))
+            @foreach($thought_video_urls['itration'] as $index => $itration)
+                <div class="row remove-parent">
+                    <div class="col-md-11">
+                        <div class="row">
+                            <input value="{{ $index }}" name="meta[thought_video_urls][itration][]" type="hidden">
+                            <div class="col-md-12 form-group mb-2">
+                                <label class="form-label">Video URL</label>
+                                <input value="{{ $thought_video_urls['url'][$index] ?? '' }}" name="meta[thought_video_urls][url][]" type="text" class="form-control" placeholder="Enter video URL">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 btn-dynamic-fields">
+                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $thought_videos }}" type="hidden" name="meta[thought_videos]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-            <small class="form-text text-muted">Maximum 3 videos.</small>
-        </div>
+            @endforeach
+        @endif
     </div>
+
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="3" data-target=".thought-video-urls-target" data-content='
+        <div class="row remove-parent">
+            <div class="col-md-11">
+                <div class="row">
+                    <input value="data" name="meta[thought_video_urls][itration][]" type="hidden">
+                    <div class="col-md-12 form-group mb-2">
+                        <label class="form-label">Video URL</label>
+                        <input value="" name="meta[thought_video_urls][url][]" type="text" class="form-control" placeholder="Enter video URL">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 btn-dynamic-fields">
+                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+        </div>'>
+        <i class="ti ti-plus"></i>
+        <span class="ml-2">Add Video URL</span>
+    </button>
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Know More Button URL</label>

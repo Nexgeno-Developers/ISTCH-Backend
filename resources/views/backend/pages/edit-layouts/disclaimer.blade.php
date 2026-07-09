@@ -16,6 +16,10 @@
     $quick_navigation_items = $metaArray('quick_navigation_items');
 
     $disclaimer_content = $metaValue('disclaimer_content');
+
+    $footer_title = $metaValue('footer_title');
+    $footer_button_text = $metaValue('footer_button_text');
+    $footer_button_url = $metaValue('footer_button_url');
 @endphp
 
 <div class="row">
@@ -123,5 +127,27 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Content</label>
         <textarea name="meta[disclaimer_content]" class="form-control text-editor" rows="6" placeholder="Enter content">{{ $disclaimer_content }}</textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Footer Section</h4>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $footer_title }}" name="meta[footer_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button Text</label>
+        <input class="form-control" value="{{ $footer_button_text }}" name="meta[footer_button_text]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Button URL</label>
+        <input class="form-control" value="{{ $footer_button_url }}" name="meta[footer_button_url]" type="text" placeholder="Enter button URL">
     </div>
 </div>

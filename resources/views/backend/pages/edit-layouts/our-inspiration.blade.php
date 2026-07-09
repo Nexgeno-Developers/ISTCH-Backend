@@ -17,12 +17,13 @@
     $vision_image = $metaValue('vision_image');
     $vision_title = $metaValue('vision_title');
     $vision_description = $metaValue('vision_description');
-    $vision_person_image = $metaValue('vision_person_image');
+    $vision_person_video_url = $metaValue('vision_person_video_url');
 
     $impact_items = $metaArray('impact_items');
 
     $philosophy_title = $metaValue('philosophy_title');
     $philosophy_subtitle = $metaValue('philosophy_subtitle');
+    $philosophy_description = $metaValue('philosophy_description');
     $philosophy_items = $metaArray('philosophy_items');
 
     $footer_title = $metaValue('footer_title');
@@ -77,18 +78,9 @@
         <textarea name="meta[vision_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $vision_description }}</textarea>
     </div>
 
-    <div class="col-md-12">
-        <label class="form-label">Person Image</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $vision_person_image }}" type="hidden" name="meta[vision_person_image]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Person Video URL</label>
+        <input class="form-control" value="{{ $vision_person_video_url }}" name="meta[vision_person_video_url]" type="text" placeholder="Enter video URL">
     </div>
 </div>
 
@@ -264,6 +256,11 @@
         <i class="ti ti-plus"></i>
         <span class="ml-2">Add Philosophy Item</span>
     </button>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Description</label>
+        <textarea name="meta[philosophy_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $philosophy_description }}</textarea>
+    </div>
 </div>
 
 <div class="row">

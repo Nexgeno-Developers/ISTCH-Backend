@@ -12,6 +12,9 @@
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
 
+    $global_volunteer_image = $metaValue('global_volunteer_image');
+    $global_volunteer_title = $metaValue('global_volunteer_title');
+    $global_volunteer_subtitle = $metaValue('global_volunteer_subtitle');
     $global_volunteer_title_one = $metaValue('global_volunteer_title_one');
     $global_volunteer_items_one = $metaArray('global_volunteer_items_one');
     $global_volunteer_title_two = $metaValue('global_volunteer_title_two');
@@ -39,6 +42,30 @@
     <div class="col-md-12">
         <hr>
         <h4 class="text-primary">Global Volunteer</h4>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Image</label>
+        <div class="form-group mb-2">
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input value="{{ $global_volunteer_image }}" type="hidden" name="meta[global_volunteer_image]" class="selected-files">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Title</label>
+        <input class="form-control" value="{{ $global_volunteer_title }}" name="meta[global_volunteer_title]" type="text" placeholder="Enter title">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Subtitle</label>
+        <input class="form-control" value="{{ $global_volunteer_subtitle }}" name="meta[global_volunteer_subtitle]" type="text" placeholder="Enter subtitle">
     </div>
 
     <div class="col-md-12 form-group mb-2">

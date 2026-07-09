@@ -16,7 +16,6 @@
     $banner_video_url = $metaValue('banner_video_url');
     $banner_join_navigation = $metaValue('banner_join_navigation');
     $banner_learn_more_navigation = $metaValue('banner_learn_more_navigation');
-    $banner_active_community_count = $metaValue('banner_active_community_count');
 
     $highlights = $metaArray('highlights');
 
@@ -54,10 +53,6 @@
     $our_inspiration_image = $metaValue('our_inspiration_image');
     $our_inspiration_key_highlights = $metaArray('our_inspiration_key_highlights');
     $our_inspiration_button_url = $metaValue('our_inspiration_button_url');
-
-    $i_am_piece_title = $metaValue('i_am_piece_title');
-    $i_am_piece_subtitle = $metaValue('i_am_piece_subtitle');
-    $i_am_piece_items = $metaArray('i_am_piece_items');
 
     $support_title = $metaValue('support_title');
     $support_description = $metaValue('support_description');
@@ -149,10 +144,6 @@
         <input class="form-control" value="{{ $banner_learn_more_navigation }}" name="meta[banner_learn_more_navigation]" type="text" placeholder="Enter navigation URL">
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Active Community Count</label>
-        <input class="form-control" value="{{ $banner_active_community_count }}" name="meta[banner_active_community_count]" type="text" placeholder="Enter active community count">
-    </div>
 </div>
 
 <div class="row">
@@ -727,95 +718,6 @@
 <div class="row">
     <div class="col-md-12">
         <hr>
-        <h4 class="text-primary">I Am Piece Section</h4>
-    </div>
-
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Title</label>
-        <input class="form-control" value="{{ $i_am_piece_title }}" name="meta[i_am_piece_title]" type="text" placeholder="Enter title">
-    </div>
-
-    <div class="col-md-6 form-group mb-2">
-        <label class="form-label">Subtitle</label>
-        <input class="form-control" value="{{ $i_am_piece_subtitle }}" name="meta[i_am_piece_subtitle]" type="text" placeholder="Enter subtitle">
-    </div>
-
-    <div class="i-am-piece-items-target w-100">
-        @if(isset($i_am_piece_items['itration']) && is_array($i_am_piece_items['itration']))
-            @foreach($i_am_piece_items['itration'] as $index => $itration)
-                <div class="row remove-parent">
-                    <div class="col-md-11">
-                        <div class="row">
-                            <input value="{{ $index }}" name="meta[i_am_piece_items][itration][]" type="hidden">
-                            <div class="col-md-6">
-                                <div class="form-group mb-2">
-                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                                        </div>
-                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                        <input type="hidden" name="meta[i_am_piece_items][image][]" class="selected-files" value="{{ $i_am_piece_items['image'][$index] ?? '' }}">
-                                    </div>
-                                    <div class="file-preview box sm"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group mb-2">
-                                <input value="{{ $i_am_piece_items['title'][$index] ?? '' }}" name="meta[i_am_piece_items][title][]" type="text" class="form-control" placeholder="Enter title">
-                            </div>
-                            <div class="col-md-12 form-group mb-2">
-                                <textarea name="meta[i_am_piece_items][description][]" class="form-control" rows="3" placeholder="Enter description">{{ $i_am_piece_items['description'][$index] ?? '' }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1 btn-dynamic-fields">
-                        <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
-                            <i class="ti ti-x"></i>
-                        </button>
-                    </div>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-limit="3" data-target=".i-am-piece-items-target" data-content='
-        <div class="row remove-parent">
-            <div class="col-md-11">
-                <div class="row">
-                    <input value="data" name="meta[i_am_piece_items][itration][]" type="hidden">
-                    <div class="col-md-6">
-                        <div class="form-group mb-2">
-                            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                                </div>
-                                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                <input type="hidden" name="meta[i_am_piece_items][image][]" class="selected-files">
-                            </div>
-                            <div class="file-preview box sm"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 form-group mb-2">
-                        <input value="" name="meta[i_am_piece_items][title][]" type="text" class="form-control" placeholder="Enter title">
-                    </div>
-                    <div class="col-md-12 form-group mb-2">
-                        <textarea name="meta[i_am_piece_items][description][]" class="form-control" rows="3" placeholder="Enter description"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-1 btn-dynamic-fields">
-                <button type="button" class="btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".remove-parent">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-        </div>'>
-        <i class="ti ti-plus"></i>
-        <span class="ml-2">Add More</span>
-    </button>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <hr>
         <h4 class="text-primary">Support Section</h4>
     </div>
 
@@ -875,6 +777,9 @@
                             <div class="col-md-4 form-group mb-2">
                                 <input value="{{ $testimonials['name'][$index] ?? '' }}" name="meta[testimonials][name][]" type="text" class="form-control" placeholder="Enter name">
                             </div>
+                            <div class="col-md-4 form-group mb-2">
+                                <input value="{{ $testimonials['designation'][$index] ?? '' }}" name="meta[testimonials][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                            </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
@@ -887,7 +792,7 @@
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group mb-2">
+                            <div class="col-md-12 form-group mb-2">
                                 <input value="{{ $testimonials['rating'][$index] ?? '' }}" name="meta[testimonials][rating][]" type="number" min="0" max="5" step="0.1" class="form-control" placeholder="Enter rating">
                             </div>
                             <div class="col-md-12 form-group mb-2">
@@ -913,6 +818,9 @@
                     <div class="col-md-4 form-group mb-2">
                         <input value="" name="meta[testimonials][name][]" type="text" class="form-control" placeholder="Enter name">
                     </div>
+                    <div class="col-md-4 form-group mb-2">
+                        <input value="" name="meta[testimonials][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
@@ -925,7 +833,7 @@
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-4 form-group mb-2">
+                    <div class="col-md-12 form-group mb-2">
                         <input value="" name="meta[testimonials][rating][]" type="number" min="0" max="5" step="0.1" class="form-control" placeholder="Enter rating">
                     </div>
                     <div class="col-md-12 form-group mb-2">
