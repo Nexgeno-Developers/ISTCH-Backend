@@ -5,18 +5,10 @@
         return $pageData->meta->where('meta_key', $key)->first()->meta_value ?? $default;
     };
 
-    $metaArray = function ($key) use ($metaValue) {
-        $value = json_decode($metaValue($key, '[]'), true);
-        return is_array($value) ? $value : [];
-    };
+    $disclaimer_items = json_decode($metaValue('disclaimer_items', '[]'), true);
+    $disclaimer_items = is_array($disclaimer_items) ? $disclaimer_items : [];
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
-
-    $quick_navigation_section_title = $metaValue('quick_navigation_section_title');
-    $quick_navigation_items = $metaArray('quick_navigation_items');
-
-    $disclaimer_content = $metaValue('disclaimer_content');
-
     $footer_title = $metaValue('footer_title');
     $footer_button_text = $metaValue('footer_button_text');
     $footer_button_url = $metaValue('footer_button_url');
@@ -37,38 +29,36 @@
 <div class="row">
     <div class="col-md-12">
         <hr>
-        <h4 class="text-primary">Quick Navigation Section</h4>
+        <h4 class="text-primary">Disclaimer Items</h4>
     </div>
 
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Section Title</label>
-        <input class="form-control" value="{{ $quick_navigation_section_title }}" name="meta[quick_navigation_section_title]" type="text" placeholder="Enter section title">
-    </div>
-
-    <div class="quick-navigation-items-target w-100">
-        @if(isset($quick_navigation_items['itration']) && is_array($quick_navigation_items['itration']))
-            @foreach($quick_navigation_items['itration'] as $index => $itration)
+    <div class="disclaimer-items-target w-100">
+        @if(isset($disclaimer_items['itration']) && is_array($disclaimer_items['itration']))
+            @foreach($disclaimer_items['itration'] as $index => $itration)
                 <div class="row remove-parent">
                     <div class="col-md-11">
                         <div class="row">
-                            <input value="{{ $index }}" name="meta[quick_navigation_items][itration][]" type="hidden">
+                            <input value="{{ $index }}" name="meta[disclaimer_items][itration][]" type="hidden">
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
+                                    <label class="form-label">Image</label>
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                                         </div>
                                         <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                        <input type="hidden" name="meta[quick_navigation_items][image][]" class="selected-files" value="{{ $quick_navigation_items['image'][$index] ?? '' }}">
+                                        <input type="hidden" name="meta[disclaimer_items][image][]" class="selected-files" value="{{ $disclaimer_items['image'][$index] ?? '' }}">
                                     </div>
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group mb-2">
-                                <input value="{{ $quick_navigation_items['title'][$index] ?? '' }}" name="meta[quick_navigation_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                            <div class="col-md-8 form-group mb-2">
+                                <label class="form-label">Title</label>
+                                <input value="{{ $disclaimer_items['title'][$index] ?? '' }}" name="meta[disclaimer_items][title][]" type="text" class="form-control" placeholder="Enter title">
                             </div>
-                            <div class="col-md-4 form-group mb-2">
-                                <input value="{{ $quick_navigation_items['url'][$index] ?? '' }}" name="meta[quick_navigation_items][url][]" type="text" class="form-control" placeholder="Enter URL">
+                            <div class="col-md-12 form-group mb-2">
+                                <label class="form-label">Content</label>
+                                <textarea name="meta[disclaimer_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter content">{{ $disclaimer_items['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -82,28 +72,31 @@
         @endif
     </div>
 
-    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".quick-navigation-items-target" data-content='
+    <button type="button" class="mt-1 btn btn-soft-success btn-icon w-100" data-toggle="add-more" data-target=".disclaimer-items-target" data-content='
         <div class="row remove-parent">
             <div class="col-md-11">
                 <div class="row">
-                    <input value="data" name="meta[quick_navigation_items][itration][]" type="hidden">
+                    <input value="data" name="meta[disclaimer_items][itration][]" type="hidden">
                     <div class="col-md-4">
                         <div class="form-group mb-2">
+                            <label class="form-label">Image</label>
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
                                 </div>
                                 <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                                <input type="hidden" name="meta[quick_navigation_items][image][]" class="selected-files">
+                                <input type="hidden" name="meta[disclaimer_items][image][]" class="selected-files">
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-4 form-group mb-2">
-                        <input value="" name="meta[quick_navigation_items][title][]" type="text" class="form-control" placeholder="Enter title">
+                    <div class="col-md-8 form-group mb-2">
+                        <label class="form-label">Title</label>
+                        <input name="meta[disclaimer_items][title][]" type="text" class="form-control" placeholder="Enter title">
                     </div>
-                    <div class="col-md-4 form-group mb-2">
-                        <input value="" name="meta[quick_navigation_items][url][]" type="text" class="form-control" placeholder="Enter URL">
+                    <div class="col-md-12 form-group mb-2">
+                        <label class="form-label">Content</label>
+                        <textarea name="meta[disclaimer_items][description][]" class="form-control text-editor" rows="4" placeholder="Enter content"></textarea>
                     </div>
                 </div>
             </div>
@@ -114,20 +107,8 @@
             </div>
         </div>'>
         <i class="ti ti-plus"></i>
-        <span class="ml-2">Add Quick Navigation Item</span>
+        <span class="ml-2">Add Disclaimer Item</span>
     </button>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <hr>
-        <h4 class="text-primary">Disclaimer Section</h4>
-    </div>
-
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Content</label>
-        <textarea name="meta[disclaimer_content]" class="form-control text-editor" rows="6" placeholder="Enter content">{{ $disclaimer_content }}</textarea>
-    </div>
 </div>
 
 <div class="row">

@@ -107,6 +107,7 @@ class PageController extends Controller
         'impact_items',
         'philosophy_items',
         'quick_navigation_items',
+        'disclaimer_items',
         'about_items',
         'peace_building_items',
         'our_approach_items',
