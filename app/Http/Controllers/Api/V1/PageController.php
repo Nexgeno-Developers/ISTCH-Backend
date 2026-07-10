@@ -73,6 +73,7 @@ class PageController extends Controller
         'events_posts',
         'hero_post_categories',
         'upcoming_convocations_post_categories',
+        'global_movements_post_categories',
     ];
 
     // Page reference keys

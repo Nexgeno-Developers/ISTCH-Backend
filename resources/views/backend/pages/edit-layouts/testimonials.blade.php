@@ -37,6 +37,30 @@
                         <div class="row">
                             <input value="{{ $index }}" name="meta[testimonials][itration][]" type="hidden">
 
+                            <div class="col-md-4">
+                                <label class="form-label">Image</label>
+                                <div class="form-group mb-2">
+                                    <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                        </div>
+                                        <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                        <input type="hidden" name="meta[testimonials][image][]" class="selected-files" value="{{ $testimonials['image'][$index] ?? '' }}">
+                                    </div>
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 form-group mb-2">
+                                <label class="form-label">Name</label>
+                                <input value="{{ $testimonials['name'][$index] ?? '' }}" name="meta[testimonials][name][]" type="text" class="form-control" placeholder="Enter name">
+                            </div>
+
+                            <div class="col-md-4 form-group mb-2">
+                                <label class="form-label">Designation</label>
+                                <input value="{{ $testimonials['designation'][$index] ?? '' }}" name="meta[testimonials][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                            </div>
+
                             <div class="col-md-12 form-group mb-2">
                                 <label class="form-label">Text</label>
                                 <textarea name="meta[testimonials][description][]" class="form-control text-editor" rows="4" placeholder="Enter text">{{ $testimonials['description'][$index] ?? '' }}</textarea>
@@ -63,6 +87,30 @@
                 <div class="col-md-11">
                     <div class="row">
                         <input value="data" name="meta[testimonials][itration][]" type="hidden">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Image</label>
+                            <div class="form-group mb-2">
+                                <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                                    </div>
+                                    <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                                    <input type="hidden" name="meta[testimonials][image][]" class="selected-files">
+                                </div>
+                                <div class="file-preview box sm"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 form-group mb-2">
+                            <label class="form-label">Name</label>
+                            <input value="" name="meta[testimonials][name][]" type="text" class="form-control" placeholder="Enter name">
+                        </div>
+
+                        <div class="col-md-4 form-group mb-2">
+                            <label class="form-label">Designation</label>
+                            <input value="" name="meta[testimonials][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                        </div>
 
                         <div class="col-md-12 form-group mb-2">
                             <label class="form-label">Text</label>

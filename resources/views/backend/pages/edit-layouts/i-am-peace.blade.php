@@ -23,6 +23,7 @@
     $global_movements_title = $metaValue('global_movements_title');
     $global_movements_subtitle = $metaValue('global_movements_subtitle');
     $global_movements_description = $metaValue('global_movements_description');
+    $global_movements_post_categories = $metaArray('global_movements_post_categories');
     $power_of_peace_title = $metaValue('power_of_peace_title');
     $power_of_peace_first_content = $metaValue('power_of_peace_first_content');
     $power_of_peace_second_content = $metaValue('power_of_peace_second_content');
@@ -40,6 +41,12 @@
     $cta_title = $metaValue('cta_title');
     $cta_donate_url = $metaValue('cta_donate_url');
     $cta_volunteer_url = $metaValue('cta_volunteer_url');
+
+    $postCategoryOptions = \App\Models\Category::query()
+        ->where('company_id', $pageData->company_id)
+        ->where('is_active', 1)
+        ->orderBy('name')
+        ->get(['id', 'name']);
 @endphp
 
 <div class="row">
@@ -124,6 +131,17 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
         <textarea name="meta[global_movements_description]" class="form-control" rows="4" placeholder="Enter description">{{ $global_movements_description }}</textarea>
+    </div>
+
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Post Categories</label>
+        <select class="form-control select2" name="meta[global_movements_post_categories][]" multiple>
+            @foreach($postCategoryOptions as $category)
+                <option value="{{ $category->id }}" {{ in_array($category->id, $global_movements_post_categories) || in_array((string) $category->id, $global_movements_post_categories) ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
     </div>
 </div>
 
