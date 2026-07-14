@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 form-group mb-2">
-                                <textarea name="meta[board_members][description][]" class="form-control" rows="3" placeholder="Enter content">{{ $board_members['description'][$index] ?? '' }}</textarea>
+                                <textarea name="meta[board_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter content">{{ $board_members['description'][$index] ?? '' }}</textarea>
                             </div>
                             <div class="col-md-3 form-group mb-2">
                                 <input value="{{ $board_members['name'][$index] ?? '' }}" name="meta[board_members][name][]" type="text" class="form-control" placeholder="Enter name">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 form-group mb-2">
-                        <textarea name="meta[board_members][description][]" class="form-control" rows="3" placeholder="Enter content"></textarea>
+                        <textarea name="meta[board_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter content"></textarea>
                     </div>
                     <div class="col-md-3 form-group mb-2">
                         <input value="" name="meta[board_members][name][]" type="text" class="form-control" placeholder="Enter name">
@@ -150,7 +150,7 @@
                     <div class="col-md-11">
                         <div class="row">
                             <input value="{{ $index }}" name="meta[patron_members][itration][]" type="hidden">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                         <div class="input-group-prepend">
@@ -162,11 +162,14 @@
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group mb-2">
+                            <div class="col-md-3 form-group mb-2">
                                 <input value="{{ $patron_members['name'][$index] ?? '' }}" name="meta[patron_members][name][]" type="text" class="form-control" placeholder="Enter name">
                             </div>
-                            <div class="col-md-4 form-group mb-2">
+                            <div class="col-md-3 form-group mb-2">
                                 <input value="{{ $patron_members['designation'][$index] ?? '' }}" name="meta[patron_members][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                            </div>
+                            <div class="col-md-3 form-group mb-2">
+                                <textarea name="meta[patron_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description">{{ $patron_members['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -185,7 +188,7 @@
             <div class="col-md-11">
                 <div class="row">
                     <input value="data" name="meta[patron_members][itration][]" type="hidden">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                 <div class="input-group-prepend">
@@ -197,11 +200,14 @@
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-4 form-group mb-2">
+                    <div class="col-md-3 form-group mb-2">
                         <input value="" name="meta[patron_members][name][]" type="text" class="form-control" placeholder="Enter name">
                     </div>
-                    <div class="col-md-4 form-group mb-2">
+                    <div class="col-md-3 form-group mb-2">
                         <input value="" name="meta[patron_members][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                    </div>
+                    <div class="col-md-3 form-group mb-2">
+                        <textarea name="meta[patron_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description"></textarea>
                     </div>
                 </div>
             </div>
@@ -234,7 +240,7 @@
                     <div class="col-md-11">
                         <div class="row">
                             <input value="{{ $index }}" name="meta[charter_council_members][itration][]" type="hidden">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                         <div class="input-group-prepend">
@@ -246,8 +252,11 @@
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6 form-group mb-2">
+                            <div class="col-md-4 form-group mb-2">
                                 <input value="{{ $charter_council_members['name'][$index] ?? '' }}" name="meta[charter_council_members][name][]" type="text" class="form-control" placeholder="Enter name">
+                            </div>
+                            <div class="col-md-4 form-group mb-2">
+                                <textarea name="meta[charter_council_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description">{{ $charter_council_members['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -266,7 +275,7 @@
             <div class="col-md-11">
                 <div class="row">
                     <input value="data" name="meta[charter_council_members][itration][]" type="hidden">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                 <div class="input-group-prepend">
@@ -278,8 +287,11 @@
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-6 form-group mb-2">
+                    <div class="col-md-4 form-group mb-2">
                         <input value="" name="meta[charter_council_members][name][]" type="text" class="form-control" placeholder="Enter name">
+                    </div>
+                    <div class="col-md-4 form-group mb-2">
+                        <textarea name="meta[charter_council_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description"></textarea>
                     </div>
                 </div>
             </div>
@@ -307,7 +319,7 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Description</label>
-        <textarea name="meta[team_description]" class="form-control" rows="4" placeholder="Enter description">{{ $team_description }}</textarea>
+        <textarea name="meta[team_description]" class="form-control text-editor" rows="4" placeholder="Enter description">{{ $team_description }}</textarea>
     </div>
 
     <div class="team-members-target w-100">
@@ -317,7 +329,7 @@
                     <div class="col-md-11">
                         <div class="row">
                             <input value="{{ $index }}" name="meta[team_members][itration][]" type="hidden">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group mb-2">
                                     <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                         <div class="input-group-prepend">
@@ -329,11 +341,14 @@
                                     <div class="file-preview box sm"></div>
                                 </div>
                             </div>
-                            <div class="col-md-4 form-group mb-2">
+                            <div class="col-md-3 form-group mb-2">
                                 <input value="{{ $team_members['name'][$index] ?? ($team_members['title'][$index] ?? '') }}" name="meta[team_members][name][]" type="text" class="form-control" placeholder="Enter name">
                             </div>
-                            <div class="col-md-4 form-group mb-2">
+                            <div class="col-md-3 form-group mb-2">
                                 <input value="{{ $team_members['designation'][$index] ?? '' }}" name="meta[team_members][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                            </div>
+                            <div class="col-md-3 form-group mb-2">
+                                <textarea name="meta[team_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description">{{ $team_members['description'][$index] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -352,7 +367,7 @@
             <div class="col-md-11">
                 <div class="row">
                     <input value="data" name="meta[team_members][itration][]" type="hidden">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group mb-2">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
                                 <div class="input-group-prepend">
@@ -364,11 +379,14 @@
                             <div class="file-preview box sm"></div>
                         </div>
                     </div>
-                    <div class="col-md-4 form-group mb-2">
+                    <div class="col-md-3 form-group mb-2">
                         <input value="" name="meta[team_members][name][]" type="text" class="form-control" placeholder="Enter name">
                     </div>
-                    <div class="col-md-4 form-group mb-2">
+                    <div class="col-md-3 form-group mb-2">
                         <input value="" name="meta[team_members][designation][]" type="text" class="form-control" placeholder="Enter designation">
+                    </div>
+                    <div class="col-md-3 form-group mb-2">
+                        <textarea name="meta[team_members][description][]" class="form-control text-editor" rows="3" placeholder="Enter description"></textarea>
                     </div>
                 </div>
             </div>
