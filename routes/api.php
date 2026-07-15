@@ -1,18 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\MenuController;
+use App\Http\Controllers\Api\V1\AuthorController;
+use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\FormSubmissionController;
-use App\Http\Controllers\Api\V1\PageController; 
-use App\Http\Controllers\Api\V1\PostController;
+use App\Http\Controllers\Api\V1\MenuController;
+use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\PaymentController;
-use App\Http\Controllers\Api\V1\StripeWebhookController;
-use App\Http\Controllers\Api\V1\CategoryController;
-use App\Http\Controllers\Api\V1\TagController;
-use App\Http\Controllers\Api\V1\AuthorController;
-use App\Http\Controllers\Api\V1\SitemapController;
+use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\SeoSettingController;
+use App\Http\Controllers\Api\V1\SitemapController;
+use App\Http\Controllers\Api\V1\StripeWebhookController;
+use App\Http\Controllers\Api\V1\TagController;
+use Illuminate\Support\Facades\Route;
+
+// Stable public aliases used by the frontend. Versioned routes remain below
+// for backwards compatibility with existing API clients.
+Route::post('forms/contact', [FormSubmissionController::class, 'contact'])
+    ->middleware(['protect.forms', 'throttle:10,1']);
+Route::post('donate', [PaymentController::class, 'donate'])
+    ->middleware('throttle:10,1');
 
 Route::prefix('v1')->group(function () {
     // Menu group (and its active item tree)
@@ -25,10 +32,12 @@ Route::prefix('v1')->group(function () {
     // Public form submission API (expects multipart/form-data when uploading files).
     Route::post('forms/submit', [FormSubmissionController::class, 'submit'])
         ->middleware(['protect.forms', 'throttle:10,1']);
+    Route::post('forms/contact', [FormSubmissionController::class, 'contact'])
+        ->middleware(['protect.forms', 'throttle:10,1']);
 
     // Page by id OR slug/path slug
     Route::get('page/{id}', [PageController::class, 'showById'])->whereNumber('id');
-    Route::get('page/{slug}', [PageController::class, 'showBySlug'])->where('slug', '.*'); 
+    Route::get('page/{slug}', [PageController::class, 'showBySlug'])->where('slug', '.*');
 
     // Posts
     Route::get('posts', [PostController::class, 'index']);

@@ -7,7 +7,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 //class FormSubmissionMail extends Mailable implements ShouldQueue
 class FormSubmissionMail extends Mailable
@@ -15,10 +14,11 @@ class FormSubmissionMail extends Mailable
     //use Queueable, SerializesModels;
     use SerializesModels;
 
-    public $formName;
-    public $data;
+    public string $formName;
 
-    public function __construct($formName, $data)
+    public array $data;
+
+    public function __construct(string $formName, array $data)
     {
         $this->formName = $formName;
         $this->data = $data;
@@ -26,10 +26,15 @@ class FormSubmissionMail extends Mailable
 
     public function build()
     {
-        // return $this->subject(config('custom.app_name'))
-        //             ->markdown('emails.form_submission');
-        return $this->from($this->data['email'], $this->data['name'] ?? null) // set user email as from
-               ->subject(config('custom.app_name'))
-               ->markdown('emails.form_submission');        
+        $mail = $this
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->subject('New '.ucfirst(str_replace('_', ' ', $this->formName)).' submission - '.config('app.name'))
+            ->markdown('emails.form_submission');
+
+        if (filter_var($this->data['email'] ?? null, FILTER_VALIDATE_EMAIL)) {
+            $mail->replyTo($this->data['email'], $this->data['name'] ?? $this->data['full_name'] ?? null);
+        }
+
+        return $mail;
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Form;
+use App\Helpers\AdminMailHelper;
 use App\Mail\FormSubmissionMail;
-use Illuminate\Support\Facades\Mail;
-use App\Models\Company;
+use App\Models\Form;
+use Illuminate\Http\Request;
 
 class FormController extends Controller
 {
@@ -27,21 +26,11 @@ class FormController extends Controller
             'phone' => $request->input('phone'),
             'form_data' => $formData,
             'ip' => request()->ip(),
-            'company_id' => $companyId
+            'company_id' => $companyId,
         ]);
 
-        //$recipientEmail = ['rashidk.developer@gmail.com'];
-        $recipientEmail = [config('custom.from_email')];
-            
-        try {
-            Mail::to($recipientEmail)
-                ->send(new FormSubmissionMail($formName, $validatedData));
-            logger('Mail sent successfully to: ' . json_encode($recipientEmail));
-        } catch (\Exception $e) {
-            logger('Mail send failed: ' . $e->getMessage());
-            //dd($e->getMessage()); // or return response()->json(['error' => $e->getMessage()]);
-        }    
-        
+        AdminMailHelper::send(new FormSubmissionMail($formName, $validatedData), $companyId);
+
         return redirect()->back()->with('success', 'Enquiry submitted successfully');
     }
 
@@ -56,17 +45,17 @@ class FormController extends Controller
                     'phone' => 'nullable|digits_between:10,15|max:50',
                     'email' => 'required|email|max:50',
                     'subject' => 'nullable|string|max:100',
-                    'message' => 'nullable|string|max:150'
+                    'message' => 'nullable|string|max:150',
                 ];
 
             case 'enrolments':
                 return [
-                    'form_name'        => 'required|max:20',
-                    'name'             => 'required|string|max:50',
-                    'phone'            => 'digits_between:10,15',
-                    'email'            => 'required|email|max:50',
-                    'course'           => 'nullable|string|max:150',
-                    'course_category'  => 'nullable|string|max:150',
+                    'form_name' => 'required|max:20',
+                    'name' => 'required|string|max:50',
+                    'phone' => 'digits_between:10,15',
+                    'email' => 'required|email|max:50',
+                    'course' => 'nullable|string|max:150',
+                    'course_category' => 'nullable|string|max:150',
                 ];
 
             default:

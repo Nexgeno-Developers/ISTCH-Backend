@@ -98,17 +98,19 @@ class UserRegistrationEmailTest extends TestCase
         Mail::to($adminEmail)->send(new NewUserRegistrationMail($user, 'Registration Form'));
 
         // Assert that the email was sent
-        Mail::assertSent(NewUserRegistrationMail::class, function ($mail) use ($user) {
+        Mail::assertSent(NewUserRegistrationMail::class, function ($mail) {
             $mail->build();
-            
+
             // Check if the email contains the user's information
             $mailContent = $mail->render();
-            
-            return str_contains($mailContent, 'John Doe') &&
-                   str_contains($mailContent, 'john@example.com') &&
-                   str_contains($mailContent, '1234567890') &&
-                   str_contains($mailContent, 'New York') &&
-                   str_contains($mailContent, 'Registration Form');
+
+            $this->assertStringContainsString('John Doe', $mailContent);
+            $this->assertStringContainsString('john@example.com', $mailContent);
+            $this->assertStringContainsString('1234567890', $mailContent);
+            $this->assertStringContainsString('New York', $mailContent);
+            $this->assertStringContainsString('Registration Form', $mailContent);
+
+            return true;
         });
     }
 }

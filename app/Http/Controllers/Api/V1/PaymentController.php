@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\AdminMailHelper;
 use App\Http\Controllers\Controller;
+use App\Mail\FormSubmissionMail;
 use App\Models\Currency;
+use App\Models\Form;
 use App\Models\Payment;
 use App\Payments\StripePayment;
 use App\Services\CurrencyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
@@ -41,7 +43,7 @@ class PaymentController extends Controller
             'payment_type' => ['required', Rule::in([Payment::TYPE_ONE_TIME, Payment::TYPE_MONTHLY])],
             'full_name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:150'],
-            'country' => ['required', 'string', 'max:100'],
+            'country' => ['nullable', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
             'currency' => ['required', Rule::in($activeCurrencyCodes)],
             'amount' => ['required', 'numeric', 'min:1', 'max:999999.99'],
@@ -66,38 +68,43 @@ class PaymentController extends Controller
             return response()->json([
                 'message' => 'Validation failed.',
                 'errors' => [
-                    'amount' => ['Minimum donation amount is ' . $currency->symbol . number_format($minimum, 2) . '.'],
+                    'amount' => ['Minimum donation amount is '.$currency->symbol.number_format($minimum, 2).'.'],
                 ],
             ], 422);
         }
 
+        $payment = null;
+        $donationForm = null;
+
         try {
-            $payment = DB::transaction(function () use ($validated, $amount, $currency, $currencyService, $stripePayment) {
-                $payment = Payment::create([
-                    'full_name' => $validated['full_name'],
-                    'email' => $validated['email'],
-                    'phone' => $validated['phone'] ?? null,
-                    'country' => $validated['country'],
-                    'payment_group_id' => (string) Str::uuid(),
-                    'payment_type' => $validated['payment_type'],
-                    'currency' => $currency->code,
-                    'amount' => $amount,
-                    'exchange_rate' => $currency->exchange_rate,
-                    'usd_amount' => $currencyService->calculateUsdAmount($amount, $currency),
-                    'payment_status' => Payment::STATUS_PENDING,
-                    'meta' => [
-                        'payment_provider' => 'stripe',
-                        'stripe_mode' => config('services.stripe.mode', 'sandbox'),
-                        'user_agent' => request()->userAgent(),
-                        'ip' => request()->ip(),
-                    ],
-                ]);
+            // Persist the donation before contacting Stripe so the submission is
+            // retained even if the payment provider is temporarily unavailable.
+            $payment = Payment::create([
+                'full_name' => $validated['full_name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'country' => $validated['country'] ?? 'Not provided',
+                'payment_group_id' => (string) Str::uuid(),
+                'payment_type' => $validated['payment_type'],
+                'currency' => $currency->code,
+                'amount' => $amount,
+                'exchange_rate' => $currency->exchange_rate,
+                'usd_amount' => $currencyService->calculateUsdAmount($amount, $currency),
+                'payment_status' => Payment::STATUS_PENDING,
+                'meta' => [
+                    'payment_provider' => 'stripe',
+                    'stripe_mode' => config('services.stripe.mode', 'sandbox'),
+                    'user_agent' => request()->userAgent(),
+                    'ip' => request()->ip(),
+                ],
+            ]);
+            $donationForm = $this->createDonationForm($payment);
 
-                $session = $stripePayment->createCheckoutSession($payment);
-                $payment->setAttribute('checkout_url', $session->url);
+            $session = $stripePayment->createCheckoutSession($payment);
+            $payment->setAttribute('checkout_url', $session->url);
+            $this->syncDonationForm($donationForm, $payment);
 
-                return $payment;
-            });
+            $this->notifyAdmin($payment);
 
             return response()->json([
                 'message' => 'Checkout session created.',
@@ -105,12 +112,25 @@ class PaymentController extends Controller
                     'payment_id' => $payment->id,
                     'payment_group_id' => $payment->payment_group_id,
                     'payment_status' => $payment->payment_status,
+                    'form_submission_id' => $donationForm->id,
                     'checkout_session_id' => $payment->stripe_checkout_session_id,
                     'checkout_url' => $payment->getAttribute('checkout_url'),
                 ],
             ], 201);
         } catch (\Throwable $e) {
-            Log::error('Stripe checkout creation failed: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Stripe checkout creation failed: '.$e->getMessage(), ['exception' => $e]);
+
+            if ($payment?->exists) {
+                $payment->forceFill(['payment_status' => Payment::STATUS_FAILED])->save();
+                $payment->mergeMeta([
+                    'checkout_error' => [
+                        'message' => $e->getMessage(),
+                        'failed_at' => now()->toIso8601String(),
+                    ],
+                ]);
+                $this->syncDonationForm($donationForm, $payment);
+                $this->notifyAdmin($payment->fresh());
+            }
 
             return response()->json([
                 'message' => 'Unable to start payment right now. Please try again.',
@@ -132,7 +152,7 @@ class PaymentController extends Controller
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'success_page_verified');
                 $payment->refresh();
             } catch (\Throwable $e) {
-                Log::warning('Unable to verify Stripe Checkout Session on success API: ' . $e->getMessage(), [
+                Log::warning('Unable to verify Stripe Checkout Session on success API: '.$e->getMessage(), [
                     'payment_id' => $payment->id,
                     'session_id' => $payment->stripe_checkout_session_id,
                 ]);
@@ -167,6 +187,60 @@ class PaymentController extends Controller
     private function minimumAmount(): float
     {
         return 1;
+    }
+
+    private function createDonationForm(Payment $payment): Form
+    {
+        return Form::create([
+            'form_name' => 'donation',
+            'name' => $payment->full_name,
+            'email' => $payment->email,
+            'phone' => $payment->phone,
+            'form_data' => $this->donationFormData($payment),
+            'ip' => request()->ip(),
+            'company_id' => config('custom.company_id') ?? 1,
+        ]);
+    }
+
+    private function syncDonationForm(?Form $form, Payment $payment): void
+    {
+        if (! $form) {
+            return;
+        }
+
+        $form->forceFill(['form_data' => $this->donationFormData($payment)])->save();
+    }
+
+    private function donationFormData(Payment $payment): array
+    {
+        return [
+            'full_name' => $payment->full_name,
+            'country' => $payment->country,
+            'payment_id' => $payment->id,
+            'payment_group_id' => $payment->payment_group_id,
+            'payment_type' => $payment->payment_type,
+            'currency' => $payment->currency,
+            'amount' => $payment->amount,
+            'usd_amount' => $payment->usd_amount,
+            'payment_status' => $payment->payment_status,
+            'stripe_checkout_session_id' => $payment->stripe_checkout_session_id,
+        ];
+    }
+
+    private function notifyAdmin(Payment $payment): void
+    {
+        AdminMailHelper::send(new FormSubmissionMail('donation', [
+            'full_name' => $payment->full_name,
+            'email' => $payment->email,
+            'phone' => $payment->phone,
+            'country' => $payment->country,
+            'payment_type' => $payment->payment_type,
+            'currency' => $payment->currency,
+            'amount' => $payment->amount,
+            'usd_amount' => $payment->usd_amount,
+            'payment_status' => $payment->payment_status,
+            'payment_group_id' => $payment->payment_group_id,
+        ]));
     }
 
     private function paymentData(Payment $payment): array

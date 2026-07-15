@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\AdminMailHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\FormSubmissionMail;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class FormSubmissionController extends Controller
 {
+    public function contact(Request $request)
+    {
+        $request->merge([
+            'form_name' => 'contact',
+            'name' => $request->input('name', $request->input('full_name')),
+        ]);
+
+        return $this->submit($request);
+    }
+
     /**
      * Submit a form via API.
      *
@@ -26,7 +36,7 @@ class FormSubmissionController extends Controller
     public function submit(Request $request)
     {
         $formName = $request->input('form_name');
-        if (!$formName) {
+        if (! $formName) {
             return response()->json([
                 'error' => [
                     'message' => 'form_name is required',
@@ -38,9 +48,7 @@ class FormSubmissionController extends Controller
         $validationRules = $this->getValidationRules($formName);
         $validatedData = $request->validate($validationRules);
 
-
-
-        $companyId = $request->input('company_id') ?? 1;
+        $companyId = $validatedData['company_id'] ?? config('custom.company_id') ?? 1;
 
         // Keep parity with your web controller: store only validated scalar fields
         // (excluding name/email/phone/form_name/company_id).
@@ -64,10 +72,16 @@ class FormSubmissionController extends Controller
         $name = $request->input('name');
 
         if (empty($name)) {
-            $first = $request->input('first_name') ?? '';
-            $last  = $request->input('last_name') ?? '';
-            $name = trim($first . ' ' . $last);
-        }        
+            // Prefer a provided full_name, otherwise build from first_name + last_name
+            $full = $request->input('full_name');
+            if (! empty($full)) {
+                $name = $full;
+            } else {
+                $first = $request->input('first_name') ?? '';
+                $last = $request->input('last_name') ?? '';
+                $name = trim("{$first} {$last}");
+            }
+        }
 
         $form = Form::create([
             'form_name' => $formName,
@@ -79,14 +93,12 @@ class FormSubmissionController extends Controller
             'company_id' => $companyId,
         ]);
 
-        //Keep the same behavior as the web flow (send email to your configured recipient).
-        $recipientEmail = [config('custom.from_email')];
-        try {
-            Mail::to($recipientEmail)->send(new FormSubmissionMail($formName, array_merge($validatedData, $formData)));
-        } catch (\Throwable $e) {
-            // Avoid failing the submission if email fails.
-            logger('Form submission mail failed: ' . $e->getMessage());
-        }
+        AdminMailHelper::send(new FormSubmissionMail($formName, [
+            'name' => $form->name,
+            'email' => $form->email,
+            'phone' => $form->phone,
+            ...$form->form_data,
+        ]), $companyId);
 
         return response()->json([
             'data' => [
@@ -144,7 +156,7 @@ class FormSubmissionController extends Controller
         ];
 
         $mimeType = (string) $file->getMimeType();
-        if (!in_array($mimeType, $allowedMimes, true)) {
+        if (! in_array($mimeType, $allowedMimes, true)) {
             abort(422, 'Disallowed file type');
         }
 
@@ -158,13 +170,13 @@ class FormSubmissionController extends Controller
 
         // Store on the `public` disk and return the storage-relative public path.
         $path = $file->storeAs(
-            'uploads/forms/' . $formName . '/' . $companyId . '/' . $date,
-            Str::random(20) . '.' . $extension,
+            'uploads/forms/'.$formName.'/'.$companyId.'/'.$date,
+            Str::random(20).'.'.$extension,
             'public'
         );
 
         // The stored value is designed to be compatible with `my_asset($value)`.
-        return 'storage/' . $path;
+        return 'storage/'.$path;
     }
 
     private function getValidationRules(string $formName): array
@@ -173,6 +185,7 @@ class FormSubmissionController extends Controller
             case 'volunteers_application':
                 return [
                     'form_name' => 'required|max:50',
+                    'company_id' => 'nullable|integer|exists:companies,id',
                     'name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
@@ -185,10 +198,11 @@ class FormSubmissionController extends Controller
                     'vision_for_impact' => 'nullable|string|max:500',
                     'availability' => 'required|string|max:100',
                 ];
-                
+
             case 'ambassador_application':
                 return [
                     'form_name' => 'required|max:50',
+                    'company_id' => 'nullable|integer|exists:companies,id',
                     'name' => 'required|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
@@ -205,10 +219,12 @@ class FormSubmissionController extends Controller
             case 'contact':
                 return [
                     'form_name' => 'required|max:50',
+                    'company_id' => 'nullable|integer|exists:companies,id',
                     'name' => 'required|string|max:50',
+                    'full_name' => 'nullable|string|max:50',
                     'email' => 'required|email|max:50',
-                    'phone' => 'required|string|max:20',
-                    // 'country' => 'required|string|max:50',
+                    'phone' => 'nullable|string|max:20',
+                    'country' => 'required|string|max:100',
                     'nature_of_inquiry' => 'required|string|max:100',
                     'message' => 'required|string|max:1000',
                 ];
@@ -216,6 +232,7 @@ class FormSubmissionController extends Controller
             default:
                 return [
                     'form_name' => 'required|max:20',
+                    'company_id' => 'nullable|integer|exists:companies,id',
                 ];
         }
     }

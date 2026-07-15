@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +22,8 @@ class User extends Authenticatable
         'role_id',
         'name',
         'email',
+        'phone',
+        'location',
         'password',
         'is_active',
     ];
@@ -52,5 +54,5 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
-    }    
+    }
 }
