@@ -60,7 +60,8 @@ it('stores a contact submission and emails the company enquiry address', functio
 
         $response = $this
             ->withHeader('User-Agent', 'Mozilla/5.0')
-            ->postJson('/api/forms/contact', [
+            ->postJson('/api/v1/forms/submit', [
+                'form_name' => 'contact',
                 'full_name' => 'John Doe',
                 'email' => 'john@example.com',
                 'country' => 'United Kingdom',

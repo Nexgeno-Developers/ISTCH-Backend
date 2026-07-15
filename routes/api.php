@@ -14,10 +14,6 @@ use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
 use Illuminate\Support\Facades\Route;
 
-// Stable public aliases used by the frontend. Versioned routes remain below
-// for backwards compatibility with existing API clients.
-Route::post('forms/contact', [FormSubmissionController::class, 'contact'])
-    ->middleware(['protect.forms', 'throttle:10,1']);
 Route::post('donate', [PaymentController::class, 'donate'])
     ->middleware('throttle:10,1');
 
@@ -31,8 +27,6 @@ Route::prefix('v1')->group(function () {
 
     // Public form submission API (expects multipart/form-data when uploading files).
     Route::post('forms/submit', [FormSubmissionController::class, 'submit'])
-        ->middleware(['protect.forms', 'throttle:10,1']);
-    Route::post('forms/contact', [FormSubmissionController::class, 'contact'])
         ->middleware(['protect.forms', 'throttle:10,1']);
 
     // Page by id OR slug/path slug

@@ -12,16 +12,6 @@ use Illuminate\Support\Str;
 
 class FormSubmissionController extends Controller
 {
-    public function contact(Request $request)
-    {
-        $request->merge([
-            'form_name' => 'contact',
-            'name' => $request->input('name', $request->input('full_name')),
-        ]);
-
-        return $this->submit($request);
-    }
-
     /**
      * Submit a form via API.
      *
@@ -220,8 +210,8 @@ class FormSubmissionController extends Controller
                 return [
                     'form_name' => 'required|max:50',
                     'company_id' => 'nullable|integer|exists:companies,id',
-                    'name' => 'required|string|max:50',
-                    'full_name' => 'nullable|string|max:50',
+                    'name' => 'required_without:full_name|nullable|string|max:50',
+                    'full_name' => 'required_without:name|nullable|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
                     'country' => 'required|string|max:100',
