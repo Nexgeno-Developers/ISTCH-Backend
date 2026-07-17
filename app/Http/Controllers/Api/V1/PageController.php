@@ -123,6 +123,8 @@ class PageController extends Controller
         'i_am_piece_title',
         'i_am_piece_subtitle',
         'i_am_piece_items',
+        'testimonials_title',
+        'testimonials',
     ];
 
     private array $removedAboutUsMetaKeys = [

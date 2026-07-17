@@ -176,35 +176,37 @@ class FormSubmissionController extends Controller
                 return [
                     'form_name' => 'required|max:50',
                     'company_id' => 'nullable|integer|exists:companies,id',
-                    'name' => 'required|string|max:50',
+                    'name' => 'required_without:full_name|nullable|string|max:50',
+                    'full_name' => 'required_without:name|nullable|string|max:50',
                     'email' => 'required|email|max:50',
                     'phone' => 'nullable|string|max:20',
                     'age' => 'required|integer|min:1|max:120',
-                    // 'country' => 'required|string|max:50',
-                    'occupation' => 'required|string|max:100',
-                    'motivation' => 'required|string|max:500',
+                    'country' => 'required|string|max:50',
+                    // 'occupation' => 'required|string|max:100',
+                    // 'motivation' => 'required|string|max:500',
                     'previous_experience' => 'nullable|string|max:500',
-                    'key_skills' => 'nullable|string|max:500',
-                    'vision_for_impact' => 'nullable|string|max:500',
+                    // 'key_skills' => 'nullable|string|max:500',
+                    // 'vision_for_impact' => 'nullable|string|max:500',
                     'availability' => 'required|string|max:100',
                 ];
 
-            case 'ambassador_application':
-                return [
-                    'form_name' => 'required|max:50',
-                    'company_id' => 'nullable|integer|exists:companies,id',
-                    'name' => 'required|string|max:50',
-                    'email' => 'required|email|max:50',
-                    'phone' => 'nullable|string|max:20',
-                    'age' => 'required|integer|min:1|max:120',
-                    // 'country' => 'required|string|max:50',
-                    'occupation' => 'required|string|max:100',
-                    'motivation' => 'required|string|max:500',
-                    'previous_experience' => 'nullable|string|max:500',
-                    'key_skills' => 'nullable|string|max:500',
-                    'vision_for_impact' => 'nullable|string|max:500',
-                    'availability' => 'required|string|max:100',
-                ];
+            // case 'ambassador_application':
+            //     return [
+            //         'form_name' => 'required|max:50',
+            //         'company_id' => 'nullable|integer|exists:companies,id',
+            //         'name' => 'required_without:full_name|nullable|string|max:50',
+            //         'full_name' => 'required_without:name|nullable|string|max:50',
+            //         'email' => 'required|email|max:50',
+            //         'phone' => 'nullable|string|max:20',
+            //         'age' => 'required|integer|min:1|max:120',
+            //         'country' => 'required|string|max:50',
+            //         // 'occupation' => 'required|string|max:100',
+            //         // 'motivation' => 'required|string|max:500',
+            //         'previous_experience' => 'nullable|string|max:500',
+            //         // 'key_skills' => 'nullable|string|max:500',
+            //         // 'vision_for_impact' => 'nullable|string|max:500',
+            //         'availability' => 'required|string|max:100',
+            //     ];
 
             case 'contact':
                 return [
