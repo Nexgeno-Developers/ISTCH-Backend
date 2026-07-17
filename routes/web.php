@@ -57,8 +57,8 @@ Route::prefix('command')->group(function () {
 //Form submission route with protection and reCAPTCHA
 Route::post('/submit-form', [FormController::class, 'submit'])->middleware(['protect.forms','recaptcha','throttle:4,1'])->name('form.submit');
 
-Route::get('/', [HomeController::class, 'index'])->name('donation.form');
-// Route::get('/', function () { abort(404); })->name('home');
+// Route::get('/', [HomeController::class, 'index'])->name('donation.form');
+Route::get('/', function () { abort(404); })->name('home');
 Route::get('/payment/success', [HomeController::class, 'success'])->name('payment.success.page');
 Route::get('/payment/cancel', [HomeController::class, 'cancel'])->name('payment.cancel.page');
 
