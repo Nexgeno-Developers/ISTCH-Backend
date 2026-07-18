@@ -22,18 +22,32 @@ class AdminMailHelper
             $recipients = self::recipients($companyId);
 
             if ($recipients === []) {
-                Log::error('Admin email was not sent because no valid recipient is configured.');
+                Log::error('Admin email was not sent because no valid recipient is configured.', [
+                    'company_id' => $companyId ?? config('custom.company_id'),
+                    'mailer' => config('mail.default'),
+                ]);
 
                 return false;
             }
 
             Mail::to($recipients)->send($mailable);
 
+            Log::info('Admin email sent successfully.', [
+                'company_id' => $companyId ?? config('custom.company_id'),
+                'mailer' => config('mail.default'),
+                'recipients' => $recipients,
+                'mailable' => $mailable::class,
+            ]);
+
             return true;
         } catch (\Throwable $exception) {
             Log::error('Admin email could not be sent.', [
+                'company_id' => $companyId ?? config('custom.company_id'),
+                'mailer' => config('mail.default'),
                 'recipients' => $recipients,
+                'exception_class' => $exception::class,
                 'message' => $exception->getMessage(),
+                'exception' => $exception,
             ]);
 
             return false;
