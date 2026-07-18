@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Models\Company;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -10,8 +9,8 @@ use Illuminate\Support\Facades\Mail;
 class AdminMailHelper
 {
     /**
-     * Send an email to the company's enquiry address, falling back to the
-     * configured admin/from address. Mail failures are logged so a completed
+     * Send an email to the configured MAIL_TO_ADDRESS, falling back to the
+     * sender address. Mail failures are logged so a completed
      * form or payment submission is never lost because the mail server is down.
      */
     public static function send(Mailable $mailable, int|string|null $companyId = null): bool
@@ -59,19 +58,6 @@ class AdminMailHelper
      */
     public static function recipients(int|string|null $companyId = null): array
     {
-        $companyId ??= config('custom.company_id');
-        $companyEmail = null;
-
-        if (filled($companyId)) {
-            $companyEmail = Company::query()->whereKey($companyId)->value('email');
-        }
-
-        $companyRecipients = self::validRecipients($companyEmail);
-
-        if ($companyRecipients !== []) {
-            return $companyRecipients;
-        }
-
         $adminRecipients = self::validRecipients(config('custom.admin_email'));
 
         if ($adminRecipients !== []) {

@@ -11,7 +11,7 @@ return [
     'app_name' => env('APP_NAME'),
     'cache_minutes' => env('CACHE_MINUTES', 120),
     'from_email' => env('MAIL_FROM_ADDRESS'),
-    'admin_email' => env('MAIL_ADMIN_ADDRESS', env('MAIL_FROM_ADDRESS')),
+    'admin_email' => env('MAIL_TO_ADDRESS', env('MAIL_ADMIN_ADDRESS', env('MAIL_FROM_ADDRESS'))),
     'tinymce_api' => env('TINYMCE_API_KEY'),
     'pagination_per_page' => env('PAGINATION_PER_PAGE', 25),
     'pagination_per_media_page' => env('PAGINATION_PER_MEDIA_PAGE', 72),
