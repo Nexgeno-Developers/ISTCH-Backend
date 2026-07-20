@@ -36,22 +36,22 @@ use App\Http\Controllers\Backend\ImportController;
 
 //Command Routes
 Route::prefix('command')->group(function () {
-    Route::get('cache-clear', [CommandController::class, 'cacheClear']);
-    Route::get('config-clear', [CommandController::class, 'configClear']);
-    Route::get('config-cache', [CommandController::class, 'configCache']);
-    Route::get('route-cache', [CommandController::class, 'routeCache']);
-    Route::get('route-clear', [CommandController::class, 'routeClear']);
-    Route::get('view-clear', [CommandController::class, 'viewClear']);
-    Route::get('view-cache', [CommandController::class, 'viewCache']);
-    Route::get('storage-link', [CommandController::class, 'storageLink']);
-    Route::get('key-generate', [CommandController::class, 'keyGenerate']);
+    // Route::get('cache-clear', [CommandController::class, 'cacheClear']);
+    // Route::get('config-clear', [CommandController::class, 'configClear']);
+    // Route::get('config-cache', [CommandController::class, 'configCache']);
+    // Route::get('route-cache', [CommandController::class, 'routeCache']);
+    // Route::get('route-clear', [CommandController::class, 'routeClear']);
+    // Route::get('view-clear', [CommandController::class, 'viewClear']);
+    // Route::get('view-cache', [CommandController::class, 'viewCache']);
+    // Route::get('storage-link', [CommandController::class, 'storageLink']);
+    // Route::get('key-generate', [CommandController::class, 'keyGenerate']);
     Route::get('optimize-clear', [CommandController::class, 'optimizeClear']);
-    Route::get('queue-work', [CommandController::class, 'queueWork']);
-    Route::get('queue-retry/{id?}', [CommandController::class, 'queueRetry']); // optional id
-    Route::get('queue-failed', [CommandController::class, 'queueFailed']);
-    Route::get('queue-forget/{id}', [CommandController::class, 'queueForget']);
-    Route::get('queue-flush', [CommandController::class, 'queueFlush']);
-    Route::get('update-currency-rates', [CommandController::class, 'updateCurrencyRates']);
+    // Route::get('queue-work', [CommandController::class, 'queueWork']);
+    // Route::get('queue-retry/{id?}', [CommandController::class, 'queueRetry']); // optional id
+    // Route::get('queue-failed', [CommandController::class, 'queueFailed']);
+    // Route::get('queue-forget/{id}', [CommandController::class, 'queueForget']);
+    // Route::get('queue-flush', [CommandController::class, 'queueFlush']);
+    // Route::get('update-currency-rates', [CommandController::class, 'updateCurrencyRates']);
 });
 
 //Form submission route with protection and reCAPTCHA

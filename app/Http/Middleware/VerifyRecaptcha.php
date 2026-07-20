@@ -12,7 +12,7 @@ class VerifyRecaptcha
 {
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        //return $next($request);
         $token = $request->input('recaptcha_token');
         $action = $request->input('recaptcha_action');
 
