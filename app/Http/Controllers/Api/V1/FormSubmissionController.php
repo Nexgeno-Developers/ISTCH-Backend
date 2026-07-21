@@ -93,6 +93,9 @@ class FormSubmissionController extends Controller
         return response()->json([
             'data' => [
                 'id' => $form->id,
+                'name' => $form->name,
+                'email' => $form->email,
+                'phone' => $form->phone,
                 'form_name' => $form->form_name,
                 'created_at' => $form->created_at,
                 'form_data' => $form->form_data,
