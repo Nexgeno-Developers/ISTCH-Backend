@@ -91,8 +91,8 @@
                     </div>    
                     
                     <div class="mb-3 form-group">
-                        <label for="company-phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                        <input type="text" id="company-phone" name="phone" value="{{ old('phone', $pageData->phone) }}" class="form-control" placeholder="" required>
+                        <label for="company-phone" class="form-label">Phone</label>
+                        <input type="text" id="company-phone" name="phone" value="{{ old('phone', $pageData->phone) }}" class="form-control" placeholder="">
                     </div>                    
 
                     <div class="mb-3 form-group">
