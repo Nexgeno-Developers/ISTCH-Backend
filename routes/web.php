@@ -101,40 +101,41 @@ Route::prefix('backend')->group(function () {
     });
 
     // Uploads routes 
-    Route::middleware(['auth.backend'])->resource('/uploaded-files', UploadController::class);
+    Route::middleware(['auth.backend'])->resource('/uploaded-files', UploadController::class)
+        ->whereNumber('uploaded_file');
     Route::middleware(['auth.backend'])->controller(UploadController::class)->group(function () {
         Route::any('/uploaded-files/file-info', 'file_info')->name('uploaded-files.info');
-        Route::get('/uploaded-files/destroy/{id}', 'destroy')->name('uploaded-files.destroy');
+        Route::get('/uploaded-files/destroy/{id}', 'destroy')->whereNumber('id')->name('uploaded-files.destroy');
         Route::post('/bulk-uploaded-files-delete', 'bulk_uploaded_files_delete')->name('bulk-uploaded-files-delete');
         Route::get('/all-file', 'all_file');
         Route::post('/aiz-uploader', 'show_uploader');
         Route::post('/aiz-uploader/upload', 'upload');
         Route::get('/aiz-uploader/get-uploaded-files', 'get_uploaded_files');
         Route::post('/aiz-uploader/get_file_by_ids', 'get_preview_files');
-        Route::get('/aiz-uploader/download/{id}', 'attachment_download')->name('download_attachment');   
+        Route::get('/aiz-uploader/download/{id}', 'attachment_download')->whereNumber('id')->name('download_attachment');
         Route::get('/aiz-uploader/generate-all-thumbnail', 'generate_all_thumbnails');     
     }); 
     
     //Companies Routes
     Route::middleware('auth.backend')->group(function () {
-        Route::resource('companies', CompanyController::class);
+        Route::resource('companies', CompanyController::class)->whereNumber('company');
     });  
     
     //Pages Routes
     Route::middleware('auth.backend')->group(function () {
-        Route::get('pages/{page}/layout-fields', [PageController::class, 'layoutFields'])->name('pages.layout-fields');
-        Route::get('pages/{page}/clone', [PageController::class, 'clone'])->name('pages.clone');
-        Route::resource('pages', PageController::class);
+        Route::get('pages/{page}/layout-fields', [PageController::class, 'layoutFields'])->whereNumber('page')->name('pages.layout-fields');
+        Route::get('pages/{page}/clone', [PageController::class, 'clone'])->whereNumber('page')->name('pages.clone');
+        Route::resource('pages', PageController::class)->whereNumber('page');
     });   
 
     //Posts Routes
     Route::middleware('auth.backend')->group(function () {
         Route::get('posts/layout-fields', [PostController::class, 'layoutFields'])->name('posts.layout-fields');
-        Route::get('posts/{post}/layout-fields', [PostController::class, 'layoutFields'])->name('posts.layout-fields.edit');
-        Route::resource('posts', PostController::class)->except(['show']);
-        Route::resource('post-categories', PostCategoryController::class)->except(['show']);
-        Route::resource('post-tags', PostTagController::class)->except(['show']);
-        Route::resource('authors', AuthorController::class)->except(['show']);
+        Route::get('posts/{post}/layout-fields', [PostController::class, 'layoutFields'])->whereNumber('post')->name('posts.layout-fields.edit');
+        Route::resource('posts', PostController::class)->except(['show'])->whereNumber('post');
+        Route::resource('post-categories', PostCategoryController::class)->except(['show'])->whereNumber('post_category');
+        Route::resource('post-tags', PostTagController::class)->except(['show'])->whereNumber('post_tag');
+        Route::resource('authors', AuthorController::class)->except(['show'])->whereNumber('author');
     });   
     
     //Forms Routes
@@ -144,12 +145,12 @@ Route::prefix('backend')->group(function () {
 
     //Payments Routes
     Route::middleware('auth.backend')->group(function () {
-        Route::resource('payments', BackendPaymentController::class)->only(['index', 'show']);
+        Route::resource('payments', BackendPaymentController::class)->only(['index', 'show'])->whereNumber('payment');
     });
     
     //Visitors Routes
     Route::middleware('auth.backend')->group(function () {
-        Route::resource('visitors', VisitorController::class);
+        Route::resource('visitors', VisitorController::class)->whereNumber('visitor');
         Route::post('visitors/bulk-delete', [VisitorController::class, 'bulkDelete'])->name('visitors.bulk-delete');
     });
     
@@ -166,16 +167,16 @@ Route::prefix('backend')->group(function () {
     
     //User and Role Management Routes
     Route::middleware('auth.backend')->group(function () {
-        Route::resource('users', UserController::class);        
+        Route::resource('users', UserController::class)->whereNumber('user');
     });  
 
     Route::middleware('auth.backend')->group(function () {
-        Route::resource('roles', RoleController::class);        
+        Route::resource('roles', RoleController::class)->whereNumber('role');
     });
 
     Route::middleware('auth.backend')->group(function () {
-        Route::get('seo-meta/{id}/clone', [SeoMetaController::class, 'clone'])->name('seo-meta.clone');
-        Route::resource('seo-meta', SeoMetaController::class);
+        Route::get('seo-meta/{id}/clone', [SeoMetaController::class, 'clone'])->whereNumber('id')->name('seo-meta.clone');
+        Route::resource('seo-meta', SeoMetaController::class)->whereNumber('seo_metum');
     });
 
     Route::middleware('auth.backend')->group(function () {

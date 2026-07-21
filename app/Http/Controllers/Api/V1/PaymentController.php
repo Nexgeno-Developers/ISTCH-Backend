@@ -169,6 +169,10 @@ class PaymentController extends Controller
 
     public function success(Request $request, StripePayment $stripePayment): JsonResponse
     {
+        if (! $this->validPaymentId($request)) {
+            return response()->json(['message' => 'Payment not found.'], 404);
+        }
+
         $payment = Payment::find($request->query('payment'));
 
         if (! $payment) {
@@ -220,6 +224,10 @@ class PaymentController extends Controller
 
     public function cancel(Request $request): JsonResponse
     {
+        if (! $this->validPaymentId($request)) {
+            return response()->json(['message' => 'Payment not found.'], 404);
+        }
+
         $payment = Payment::find($request->query('payment'));
 
         if (! $payment) {
@@ -240,6 +248,13 @@ class PaymentController extends Controller
     private function minimumAmount(): float
     {
         return 1;
+    }
+
+    private function validPaymentId(Request $request): bool
+    {
+        $paymentId = (string) $request->query('payment', '');
+
+        return ctype_digit($paymentId) && (int) $paymentId > 0;
     }
 
     private function providerUnavailableResponse(): JsonResponse

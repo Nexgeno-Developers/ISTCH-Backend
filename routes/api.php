@@ -19,11 +19,11 @@ Route::post('donate', [PaymentController::class, 'donate'])
 
 Route::prefix('v1')->group(function () {
     // Menu group (and its active item tree)
-    Route::get('menus/groups/{id}', [MenuController::class, 'showById']);
+    Route::get('menus/groups/{id}', [MenuController::class, 'showById'])->whereNumber('id');
     Route::get('menus/groups/by-name/{name}', [MenuController::class, 'showByName']);
 
     // Company info by company id
-    Route::get('companies/{id}', [CompanyController::class, 'showById']);
+    Route::get('companies/{id}', [CompanyController::class, 'showById'])->whereNumber('id');
 
     // Public form submission API (expects multipart/form-data when uploading files).
     Route::post('forms/submit', [FormSubmissionController::class, 'submit'])

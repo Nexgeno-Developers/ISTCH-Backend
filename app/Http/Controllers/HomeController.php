@@ -30,6 +30,8 @@ class HomeController extends Controller
 
     public function success(Request $request, StripePayment $stripePayment): RedirectResponse
     {
+        abort_unless($this->validPaymentId($request), 404);
+
         $payment = Payment::find($request->query('payment'));
 
         if ($payment && $payment->stripe_checkout_session_id) {
@@ -51,6 +53,8 @@ class HomeController extends Controller
 
     public function cancel(Request $request): RedirectResponse
     {
+        abort_unless($this->validPaymentId($request), 404);
+
         $payment = Payment::find($request->query('payment'));
 
         if ($payment && $payment->payment_status === Payment::STATUS_PENDING) {
@@ -91,6 +95,13 @@ class HomeController extends Controller
         return $frontendUrl . '/payment/' . $statusPage . '?' . http_build_query([
             'data' => $encodedPayload,
         ]);
+    }
+
+    private function validPaymentId(Request $request): bool
+    {
+        $paymentId = (string) $request->query('payment', '');
+
+        return ctype_digit($paymentId) && (int) $paymentId > 0;
     }
 
     private function base64UrlEncode(string $value): string
