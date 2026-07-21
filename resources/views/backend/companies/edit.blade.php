@@ -125,6 +125,10 @@
                         <label for="meta-facebook" class="form-label">Facebook URL</label>
                         <input type="url" class="form-control" id="meta-facebook" name="meta[facebook_url]" value="{{ old('meta.facebook_url', $pageData->meta->where('meta_key', 'facebook_url')->first()->meta_value ?? '') }}" placeholder="Enter Facebook URL">
                     </div>
+                    <div class="mb-3 form-group">
+                        <label for="meta-youtube" class="form-label">YouTube URL</label>
+                        <input type="url" class="form-control" id="meta-youtube" name="meta[youtube_url]" value="{{ old('meta.youtube_url', $pageData->meta->where('meta_key', 'youtube_url')->first()->meta_value ?? '') }}" placeholder="Enter YouTube URL">
+                    </div>
                 </div>
             </div>
 

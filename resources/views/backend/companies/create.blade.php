@@ -139,6 +139,11 @@
                         <input type="url" class="form-control" id="meta-facebook" name="meta[facebook_url]"
                             value="{{ old('meta.facebook_url') }}" placeholder="Enter Facebook URL">
                     </div>
+                    <div class="mb-3 form-group">
+                        <label for="meta-youtube" class="form-label">YouTube URL</label>
+                        <input type="url" class="form-control" id="meta-youtube" name="meta[youtube_url]"
+                            value="{{ old('meta.youtube_url') }}" placeholder="Enter YouTube URL">
+                    </div>
                 </div>
             </div>
 
