@@ -4,18 +4,15 @@ namespace App\Payments;
 
 use App\Models\Payment;
 use Stripe\Checkout\Session;
-use Stripe\Stripe;
+use Stripe\StripeClient;
 
 class StripePayment
 {
-    public function __construct()
-    {
-        Stripe::setApiKey($this->secretKey());
-    }
+    private ?StripeClient $client = null;
 
     public function secretKey(): string
     {
-        $mode = config('services.stripe.mode', 'sandbox');
+        $mode = $this->mode();
 
         $secret = trim($mode === 'live'
             ? (string) config('services.stripe.live.secret')
@@ -30,7 +27,12 @@ class StripePayment
         }
 
         if (blank($secret)) {
-            throw new \RuntimeException('Stripe secret key is not configured for ' . $mode . ' mode.');
+            throw new StripeConfigurationException('secret_key_missing');
+        }
+
+        $expectedPrefix = $mode === 'live' ? 'sk_live_' : 'sk_test_';
+        if (! str_starts_with($secret, $expectedPrefix) || ! preg_match('/^sk_(?:test|live)_[A-Za-z0-9_]+$/', $secret)) {
+            throw new StripeConfigurationException('secret_key_invalid');
         }
 
         return $secret;
@@ -38,7 +40,7 @@ class StripePayment
 
     public function webhookSecret(): string
     {
-        $mode = config('services.stripe.mode', 'sandbox');
+        $mode = $this->mode();
 
         return $mode === 'live'
             ? (string) config('services.stripe.live.webhook_secret')
@@ -95,7 +97,7 @@ class StripePayment
             ]];
         }
 
-        $session = Session::create($params);
+        $session = $this->client()->checkout->sessions->create($params);
 
         $payment->forceFill([
             'stripe_checkout_session_id' => $session->id,
@@ -109,7 +111,30 @@ class StripePayment
 
     public function retrieveCheckoutSession(string $sessionId): Session
     {
-        return Session::retrieve($sessionId);
+        return $this->client()->checkout->sessions->retrieve($sessionId, []);
+    }
+
+    /**
+     * Configuration metadata that is safe to include in application logs.
+     * Secret and publishable key values must never be returned here.
+     *
+     * @return array<string, bool|string>
+     */
+    public function safeConfigurationContext(): array
+    {
+        $mode = strtolower(trim((string) config('services.stripe.mode', 'sandbox')));
+        $secret = $mode === 'live'
+            ? config('services.stripe.live.secret')
+            : config('services.stripe.test.secret');
+        $key = $mode === 'live'
+            ? config('services.stripe.live.key')
+            : config('services.stripe.test.key');
+
+        return [
+            'mode' => $mode,
+            'secret_configured' => filled(trim((string) $secret)),
+            'publishable_key_configured' => filled(trim((string) $key)),
+        ];
     }
 
     public function syncPaymentFromCheckoutSession(Payment $payment, Session $session, string $source = 'stripe_checkout'): string
@@ -216,5 +241,21 @@ class StripePayment
         return in_array(strtoupper($currency), $zeroDecimalCurrencies, true)
             ? (int) round($amount)
             : (int) round($amount * 100);
+    }
+
+    private function client(): StripeClient
+    {
+        return $this->client ??= new StripeClient($this->secretKey());
+    }
+
+    private function mode(): string
+    {
+        $mode = strtolower(trim((string) config('services.stripe.mode', 'sandbox')));
+
+        if (! in_array($mode, ['sandbox', 'live'], true)) {
+            throw new StripeConfigurationException('mode_invalid');
+        }
+
+        return $mode;
     }
 }

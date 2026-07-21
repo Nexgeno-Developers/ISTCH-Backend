@@ -8,6 +8,7 @@ use App\Mail\FormSubmissionMail;
 use App\Models\Currency;
 use App\Models\Form;
 use App\Models\Payment;
+use App\Payments\StripeConfigurationException;
 use App\Payments\StripePayment;
 use App\Services\CurrencyService;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Exception\AuthenticationException;
 
 class PaymentController extends Controller
 {
@@ -33,10 +36,6 @@ class PaymentController extends Controller
 
     public function donate(Request $request, CurrencyService $currencyService, StripePayment $stripePayment): JsonResponse
     {
-        if (config('services.payment.default') !== 'stripe') {
-            return response()->json(['message' => 'Active payment provider is not configured.'], 500);
-        }
-
         $activeCurrencyCodes = Currency::where('is_active', true)->pluck('code')->toArray();
 
         $validator = Validator::make($request->all(), [
@@ -71,6 +70,14 @@ class PaymentController extends Controller
                     'amount' => ['Minimum donation amount is '.$currency->symbol.number_format($minimum, 2).'.'],
                 ],
             ], 422);
+        }
+
+        if (config('services.payment.default') !== 'stripe') {
+            Log::error('Payment provider is unavailable.', [
+                'configured_provider' => config('services.payment.default'),
+            ]);
+
+            return $this->providerUnavailableResponse();
         }
 
         $payment = null;
@@ -117,22 +124,44 @@ class PaymentController extends Controller
                     'checkout_url' => $payment->getAttribute('checkout_url'),
                 ],
             ], 201);
-        } catch (\Throwable $e) {
-            Log::error('Stripe checkout creation failed: '.$e->getMessage(), ['exception' => $e]);
+        } catch (StripeConfigurationException|AuthenticationException $e) {
+            Log::critical('Stripe checkout configuration is unavailable.', array_merge(
+                $stripePayment->safeConfigurationContext(),
+                [
+                    'reason' => $e instanceof StripeConfigurationException ? $e->reason : 'authentication_failed',
+                    'exception_class' => $e::class,
+                ],
+            ));
 
-            if ($payment?->exists) {
-                $payment->forceFill(['payment_status' => Payment::STATUS_FAILED])->save();
-                $payment->mergeMeta([
-                    'checkout_error' => [
-                        'message' => $e->getMessage(),
-                        'failed_at' => now()->toIso8601String(),
-                    ],
-                ]);
-                $this->syncDonationForm($donationForm, $payment);
-                $this->notifyAdmin($payment->fresh());
-            }
+            $this->markCheckoutFailed($payment, $donationForm, 'provider_configuration');
+
+            return $this->providerUnavailableResponse();
+        } catch (ApiErrorException $e) {
+            Log::error('Stripe API rejected checkout creation.', [
+                'exception_class' => $e::class,
+                'stripe_code' => $e->getStripeCode(),
+                'stripe_request_id' => $e->getRequestId(),
+                'http_status' => $e->getHttpStatus(),
+                'payment_id' => $payment?->id,
+            ]);
+
+            $this->markCheckoutFailed($payment, $donationForm, 'stripe_api_error');
 
             return response()->json([
+                'code' => 'PAYMENT_PROVIDER_ERROR',
+                'message' => 'Unable to start payment right now. Please try again.',
+            ], 502);
+        } catch (\Throwable $e) {
+            Log::error('Checkout creation failed.', [
+                'exception_class' => $e::class,
+                'payment_id' => $payment?->id,
+                'exception' => $e,
+            ]);
+
+            $this->markCheckoutFailed($payment, $donationForm, 'application_error');
+
+            return response()->json([
+                'code' => 'PAYMENT_CREATION_FAILED',
                 'message' => 'Unable to start payment right now. Please try again.',
             ], 500);
         }
@@ -151,6 +180,30 @@ class PaymentController extends Controller
                 $session = $stripePayment->retrieveCheckoutSession($payment->stripe_checkout_session_id);
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'success_page_verified');
                 $payment->refresh();
+            } catch (StripeConfigurationException|AuthenticationException $e) {
+                Log::critical('Stripe payment verification configuration is unavailable.', array_merge(
+                    $stripePayment->safeConfigurationContext(),
+                    [
+                        'reason' => $e instanceof StripeConfigurationException ? $e->reason : 'authentication_failed',
+                        'exception_class' => $e::class,
+                        'payment_id' => $payment->id,
+                    ],
+                ));
+
+                return $this->providerUnavailableResponse();
+            } catch (ApiErrorException $e) {
+                Log::error('Stripe API payment verification failed.', [
+                    'exception_class' => $e::class,
+                    'stripe_code' => $e->getStripeCode(),
+                    'stripe_request_id' => $e->getRequestId(),
+                    'http_status' => $e->getHttpStatus(),
+                    'payment_id' => $payment->id,
+                ]);
+
+                return response()->json([
+                    'code' => 'PAYMENT_PROVIDER_ERROR',
+                    'message' => 'Unable to verify payment right now. Please try again.',
+                ], 502);
             } catch (\Throwable $e) {
                 Log::warning('Unable to verify Stripe Checkout Session on success API: '.$e->getMessage(), [
                     'payment_id' => $payment->id,
@@ -187,6 +240,31 @@ class PaymentController extends Controller
     private function minimumAmount(): float
     {
         return 1;
+    }
+
+    private function providerUnavailableResponse(): JsonResponse
+    {
+        return response()->json([
+            'code' => 'PAYMENT_PROVIDER_UNAVAILABLE',
+            'message' => 'Payments are temporarily unavailable. Please try again later.',
+        ], 503);
+    }
+
+    private function markCheckoutFailed(?Payment $payment, ?Form $form, string $reason): void
+    {
+        if (! $payment?->exists) {
+            return;
+        }
+
+        $payment->forceFill(['payment_status' => Payment::STATUS_FAILED])->save();
+        $payment->mergeMeta([
+            'checkout_error' => [
+                'reason' => $reason,
+                'failed_at' => now()->toIso8601String(),
+            ],
+        ]);
+        $this->syncDonationForm($form, $payment);
+        $this->notifyAdmin($payment->fresh());
     }
 
     private function createDonationForm(Payment $payment): Form
