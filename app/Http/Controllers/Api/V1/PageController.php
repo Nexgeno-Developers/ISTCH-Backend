@@ -129,6 +129,11 @@ class PageController extends Controller
 
     private array $removedAboutUsMetaKeys = [
         'genesis_title',
+        'genesis_image',
+    ];
+
+    private array $removedIAmPeaceMetaKeys = [
+        'power_of_peace_fourth_content',
     ];
 
     private array $removedOurInspirationMetaKeys = [
@@ -305,6 +310,7 @@ class PageController extends Controller
                 ->reject(function ($m) use ($page) {
                     return ($page->layout === 'home' && in_array($m->meta_key, $this->removedHomeMetaKeys, true))
                         || ($page->layout === 'about-us' && in_array($m->meta_key, $this->removedAboutUsMetaKeys, true))
+                        || ($page->layout === 'i-am-peace' && in_array($m->meta_key, $this->removedIAmPeaceMetaKeys, true))
                         || ($page->layout === 'our-inspiration' && in_array($m->meta_key, $this->removedOurInspirationMetaKeys, true))
                         || ($page->layout === 'events' && in_array($m->meta_key, $this->removedEventsMetaKeys, true));
                 })

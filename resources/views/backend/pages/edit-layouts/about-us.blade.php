@@ -11,7 +11,7 @@
     $breadcrumb_title = $metaValue('breadcrumb_title');
 
     $genesis_subtitle = $metaValue('genesis_subtitle');
-    $genesis_image = $metaValue('genesis_image');
+    $genesis_video_url = $metaValue('genesis_video_url');
     $genesis_video = $metaValue('genesis_video');
     $genesis_description = $metaValue('genesis_description');
 
@@ -54,18 +54,9 @@
         <input class="form-control" value="{{ $genesis_subtitle }}" name="meta[genesis_subtitle]" type="text" placeholder="Enter title">
     </div>
 
-    <div class="col-md-12">
-        <label class="form-label">Image</label>
-        <div class="form-group mb-2">
-            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
-                <div class="input-group-prepend">
-                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
-                </div>
-                <div class="form-control file-amount">{{ __('Choose File') }}</div>
-                <input value="{{ $genesis_image }}" type="hidden" name="meta[genesis_image]" class="selected-files">
-            </div>
-            <div class="file-preview box sm"></div>
-        </div>
+    <div class="col-md-12 form-group mb-2">
+        <label class="form-label">Video URL</label>
+        <input class="form-control" value="{{ $genesis_video_url }}" name="meta[genesis_video_url]" type="url" placeholder="Enter video URL">
     </div>
 
     <div class="col-md-12">

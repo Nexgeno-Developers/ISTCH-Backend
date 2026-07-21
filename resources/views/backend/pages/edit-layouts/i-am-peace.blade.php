@@ -28,7 +28,6 @@
     $power_of_peace_first_content = $metaValue('power_of_peace_first_content');
     $power_of_peace_second_content = $metaValue('power_of_peace_second_content');
     $power_of_peace_third_content = $metaValue('power_of_peace_third_content');
-    $power_of_peace_fourth_content = $metaValue('power_of_peace_fourth_content');
     $power_of_peace_fifth_content = $metaValue('power_of_peace_fifth_content');
 
     $where_peace_bg_image = $metaValue('where_peace_bg_image');
@@ -173,12 +172,7 @@
 
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Fourth Content</label>
-        <textarea name="meta[power_of_peace_fourth_content]" class="form-control text-editor" rows="4" placeholder="Enter fourth content">{{ $power_of_peace_fourth_content }}</textarea>
-    </div>
-
-    <div class="col-md-12 form-group mb-2">
-        <label class="form-label">Fifth Content</label>
-        <textarea name="meta[power_of_peace_fifth_content]" class="form-control text-editor" rows="4" placeholder="Enter fifth content">{{ $power_of_peace_fifth_content }}</textarea>
+        <textarea name="meta[power_of_peace_fifth_content]" class="form-control text-editor" rows="4" placeholder="Enter fourth content">{{ $power_of_peace_fifth_content }}</textarea>
     </div>
 </div>
 
