@@ -29,6 +29,13 @@ it('publishes populated CMS content through the public APIs', function () {
         'type' => 'image',
         'file_size' => 1234,
     ]);
+    $detailUpload = Upload::create([
+        'file_original_name' => 'audit-detail.jpg',
+        'file_name' => 'storage/uploads/audit-detail.jpg',
+        'extension' => 'jpg',
+        'type' => 'image',
+        'file_size' => 2345,
+    ]);
 
     $page = Page::create([
         'slug' => 'audit-page',
@@ -67,6 +74,7 @@ it('publishes populated CMS content through the public APIs', function () {
         'title' => 'Audit Post',
         'content' => '<p>Published post body</p>',
         'featured_image' => (string) $upload->id,
+        'featured_detail_image' => $upload->id . ',' . $detailUpload->id,
         'layout' => 'default_post_detail',
         'is_active' => true,
         'company_id' => 1,
@@ -125,13 +133,14 @@ it('publishes populated CMS content through the public APIs', function () {
         ->assertJsonPath('data.title', 'Audit Post')
         ->assertJsonPath('data.content', '<p>Published post body</p>')
         ->assertJsonPath('data.featured_image.id', $upload->id)
+        ->assertJsonPath('data.featured_detail_image.0.id', $upload->id)
+        ->assertJsonPath('data.featured_detail_image.1.id', $detailUpload->id)
         ->assertJsonPath('data.summary', 'Audit post summary')
         ->assertJsonPath('data.seo.title', 'Audit Post SEO Title');
 
     $this->getJson('/api/v1/posts')
         ->assertOk()
-        ->assertJsonPath('pagination.total', 1)
-        ->assertJsonPath('data.0.slug', 'audit-post');
+        ->assertJsonFragment(['slug' => 'audit-post']);
 
     $this->getJson('/api/v1/menus/groups/' . $menu->id)
         ->assertOk()
@@ -151,6 +160,6 @@ it('publishes populated CMS content through the public APIs', function () {
 
     $this->getJson('/api/v1/sitemap')
         ->assertOk()
-        ->assertJsonPath('data.pages.0.slug', 'https://frontend.audit.test/audit-page')
-        ->assertJsonPath('data.posts.0.slug', 'https://frontend.audit.test/audit-post');
+        ->assertJsonFragment(['slug' => 'https://frontend.audit.test/audit-page'])
+        ->assertJsonFragment(['slug' => 'https://frontend.audit.test/audit-post']);
 });

@@ -679,6 +679,7 @@ if (!function_exists('post_validation_rules')) {
             'language' => 'nullable|string|max:5',
             'content' => 'nullable|string',
             'featured_image' => 'nullable|string',
+            'featured_detail_image' => 'nullable|string',
             'layout' => 'required|string|in:' . implode(',', array_keys(getPostLayouts())),
             'is_active' => 'required|boolean',
             'company_id' => 'required|exists:companies,id',
@@ -1118,6 +1119,9 @@ if (!function_exists('post_category_details_from_ids')) {
                     'featured_image' => filled($post->featured_image)
                         ? uploaded_asset_details_from_ids($post->featured_image)
                         : null,
+                    'featured_detail_image' => filled($post->featured_detail_image)
+                        ? uploaded_asset_details_from_ids($post->featured_detail_image, null, false)
+                        : [],
                     'summary' => $summary,
                     'date' => filled($date) ? $date : null,
                     'time' => filled($time) ? $time : null,

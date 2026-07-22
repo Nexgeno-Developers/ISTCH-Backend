@@ -286,6 +286,9 @@ class PageController extends Controller
                             'featured_image' => filled($post->featured_image)
                                 ? uploaded_asset_details_from_ids($post->featured_image)
                                 : null,
+                            'featured_detail_image' => filled($post->featured_detail_image)
+                                ? uploaded_asset_details_from_ids($post->featured_detail_image, null, false)
+                                : [],
                             'summary' => $summary,
                             'date' => filled($date) ? $date : null,
                             'time' => filled($time) ? $time : null,

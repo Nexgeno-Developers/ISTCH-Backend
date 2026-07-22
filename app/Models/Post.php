@@ -12,6 +12,7 @@ class Post extends Model
         'title',
         'content',
         'featured_image',
+        'featured_detail_image',
         'layout',
         'is_active',
         'company_id',

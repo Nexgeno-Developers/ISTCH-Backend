@@ -110,6 +110,18 @@
                         <div class="file-preview box sm"></div>
                     </div>
 
+                    <div class="mb-2 form-group clearfix">
+                        <label for="featured_detail_image" class="form-label">Featured Detail Image</label>
+                        <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="true">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ __('Choose Files') }}</div>
+                            <input type="hidden" name="featured_detail_image" class="selected-files" value="{{ old('featured_detail_image') }}">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+
                     <div class="mb-2 form-group">
                         <label for="published_at" class="form-label">Published At</label>
                         <input type="datetime-local" class="form-control" name="published_at" value="{{ old('published_at') }}">

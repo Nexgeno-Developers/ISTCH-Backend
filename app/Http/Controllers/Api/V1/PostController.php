@@ -104,7 +104,9 @@ class PostController extends Controller
         if ($cached !== null) {
             // Payload schema guard: if we add new top-level keys, old cached payloads
             // may not include them until TTL expires. Rebuild once and store fresh.
-            if (array_key_exists('date', $cached) && array_key_exists('time', $cached)) {
+            if (array_key_exists('date', $cached)
+                && array_key_exists('time', $cached)
+                && array_key_exists('featured_detail_image', $cached)) {
                 return response()->json(['data' => $cached]);
             }
         }
@@ -170,6 +172,9 @@ class PostController extends Controller
             'featured_image' => filled($post->featured_image)
                 ? uploaded_asset_details_from_ids($post->featured_image)
                 : null,
+            'featured_detail_image' => filled($post->featured_detail_image)
+                ? uploaded_asset_details_from_ids($post->featured_detail_image, null, false)
+                : [],
             'layout' => array_key_exists($post->layout, getPostLayouts()) ? $post->layout : 'default_post_detail',
             'is_active' => (bool) $post->is_active,
             'company_id' => $post->company_id,
@@ -264,6 +269,9 @@ class PostController extends Controller
                 'featured_image' => filled($related->featured_image)
                     ? uploaded_asset_details_from_ids($related->featured_image)
                     : null,
+                'featured_detail_image' => filled($related->featured_detail_image)
+                    ? uploaded_asset_details_from_ids($related->featured_detail_image, null, false)
+                    : [],
                 'summary' => $summary,
                 'published_at' => $related->published_at?->toISOString(),
             ];
