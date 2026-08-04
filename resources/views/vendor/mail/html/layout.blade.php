@@ -25,18 +25,21 @@ width: 100% !important;
 </style>
 {{ $head ?? '' }}
 </head>
-<body>
+<body style="margin: 0; padding: 0; background-color: #e8eff5;">
 
-<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; margin: 0; padding: 0; background-color: #e8eff5;">
 <tr>
-<td align="center">
-<table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+<td class="top-stripe" style="height: 18px; line-height: 18px; font-size: 0; background-color: #1d7faa;">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" style="background-color: #e8eff5; padding: 24px 12px 32px;">
+<table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%; background-color: #e8eff5;">
 {{ $header ?? '' }}
 
 <!-- Email Body -->
 <tr>
-<td class="body" width="100%" cellpadding="0" cellspacing="0" style="border: hidden !important;">
-<table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+<td class="body" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; background-color: #e8eff5; border: 0; padding: 0 0 20px;">
+<table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation" style="width: 570px; max-width: 570px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dfe7f0; border-radius: 18px;">
 <!-- Body content -->
 <tr>
 <td class="content-cell">

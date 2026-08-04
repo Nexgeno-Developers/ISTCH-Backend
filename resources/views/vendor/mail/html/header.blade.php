@@ -2,7 +2,7 @@
 
 @php
     $brandName = get_setting('name', config('app.name'));
-    $logoUrl = backend_logo_url();
+    $logoUrl = central_asset(backend_logo_url());
     $hasLogo = filled($logoUrl);
 @endphp
 
