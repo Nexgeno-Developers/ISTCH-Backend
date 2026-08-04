@@ -143,8 +143,8 @@ img {
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
     background-color: #e8eff5;
-    border-bottom: 1px solid #e8eff5;
-    border-top: 1px solid #e8eff5;
+    border-bottom: 0;
+    border-top: 0;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -157,6 +157,7 @@ img {
     background-color: #ffffff;
     border-color: #dfe7f0;
     border-radius: 18px;
+    border-style: solid;
     border-width: 1px;
     box-shadow: 0 18px 42px rgba(33, 63, 94, 0.08);
     margin: 0 auto;
@@ -322,6 +323,7 @@ img {
 
 .mail-field-table {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
 }
 
@@ -341,16 +343,35 @@ img {
     font-weight: 700;
     padding-right: 18px;
     white-space: nowrap;
-    width: 34%;
+    width: 32%;
 }
 
 .mail-field-value {
     color: #6b7f99;
     font-size: 15px;
     line-height: 1.6;
+    text-align: left;
 }
 
-.mail-signoff {
-    color: #6b7f99;
+.mail-signoff-table {
+    border-collapse: collapse;
     margin-top: 28px;
+    width: 100%;
+}
+
+.mail-signoff-cell {
+    padding-top: 28px;
+    text-align: left;
+}
+
+.mail-signoff-text,
+.mail-signoff-brand {
+    color: #6b7f99;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.mail-signoff-brand {
+    margin-top: 2px;
 }

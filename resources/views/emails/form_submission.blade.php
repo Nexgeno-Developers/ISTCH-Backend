@@ -20,8 +20,12 @@
 @endforeach
 </table>
 
-<p class="mail-signoff">
-Thanks,<br>
-{{ get_setting('name', config('app.name')) }}
-</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="mail-signoff-table">
+<tr>
+    <td class="mail-signoff-cell">
+        <span class="mail-signoff-text">Thanks,</span><br>
+        <span class="mail-signoff-brand">{{ get_setting('name', config('app.name')) }}</span>
+    </td>
+</tr>
+</table>
 @endcomponent
