@@ -88,7 +88,7 @@ class FormSubmissionController extends Controller
             'email' => $form->email,
             'phone' => $form->phone,
             ...$form->form_data,
-        ]), $companyId);
+        ]), $companyId, $formName);
 
         return response()->json([
             'data' => [

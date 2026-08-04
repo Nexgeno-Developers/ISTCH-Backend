@@ -29,7 +29,7 @@ class FormController extends Controller
             'company_id' => $companyId,
         ]);
 
-        AdminMailHelper::send(new FormSubmissionMail($formName, $validatedData), $companyId);
+        AdminMailHelper::send(new FormSubmissionMail($formName, $validatedData), $companyId, $formName);
 
         return redirect()->back()->with('success', 'Enquiry submitted successfully');
     }

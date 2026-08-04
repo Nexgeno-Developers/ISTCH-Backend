@@ -9,20 +9,26 @@ use Illuminate\Support\Facades\Mail;
 class AdminMailHelper
 {
     /**
-     * Send an email to the configured MAIL_TO_ADDRESS, falling back to the
-     * sender address. Mail failures are logged so a completed
-     * form or payment submission is never lost because the mail server is down.
+     * Send an email to a configured admin recipient group, falling back to the
+     * default admin address and then the sender address. Mail failures are logged
+     * so a completed form or payment submission is never lost because the mail
+     * server is down.
      */
-    public static function send(Mailable $mailable, int|string|null $companyId = null): bool
+    public static function send(
+        Mailable $mailable,
+        int|string|null $companyId = null,
+        ?string $recipientGroup = null
+    ): bool
     {
         $recipients = [];
 
         try {
-            $recipients = self::recipients($companyId);
+            $recipients = self::recipients($companyId, $recipientGroup);
 
             if ($recipients === []) {
                 Log::error('Admin email was not sent because no valid recipient is configured.', [
                     'company_id' => $companyId ?? config('custom.company_id'),
+                    'recipient_group' => $recipientGroup,
                     'mailer' => config('mail.default'),
                 ]);
 
@@ -33,6 +39,7 @@ class AdminMailHelper
 
             Log::info('Admin email sent successfully.', [
                 'company_id' => $companyId ?? config('custom.company_id'),
+                'recipient_group' => $recipientGroup,
                 'mailer' => config('mail.default'),
                 'recipients' => $recipients,
                 'mailable' => $mailable::class,
@@ -42,6 +49,7 @@ class AdminMailHelper
         } catch (\Throwable $exception) {
             Log::error('Admin email could not be sent.', [
                 'company_id' => $companyId ?? config('custom.company_id'),
+                'recipient_group' => $recipientGroup,
                 'mailer' => config('mail.default'),
                 'recipients' => $recipients,
                 'exception_class' => $exception::class,
@@ -56,8 +64,16 @@ class AdminMailHelper
     /**
      * @return array<int, string>
      */
-    public static function recipients(int|string|null $companyId = null): array
+    public static function recipients(int|string|null $companyId = null, ?string $recipientGroup = null): array
     {
+        if ($recipientGroup !== null) {
+            $groupRecipients = self::validRecipients(config("custom.admin_email_recipients.{$recipientGroup}"));
+
+            if ($groupRecipients !== []) {
+                return $groupRecipients;
+            }
+        }
+
         $adminRecipients = self::validRecipients(config('custom.admin_email'));
 
         if ($adminRecipients !== []) {

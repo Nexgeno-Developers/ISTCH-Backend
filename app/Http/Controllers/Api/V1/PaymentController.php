@@ -333,7 +333,7 @@ class PaymentController extends Controller
             'usd_amount' => $payment->usd_amount,
             'payment_status' => $payment->payment_status,
             'payment_group_id' => $payment->payment_group_id,
-        ]));
+        ]), null, 'notify_admin');
     }
 
     private function paymentData(Payment $payment): array
