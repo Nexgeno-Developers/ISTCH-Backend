@@ -1,11 +1,18 @@
 @props(['url'])
+
+@php
+    $brandName = get_setting('name', config('app.name'));
+    $logoUrl = backend_logo_url();
+    $hasLogo = filled($logoUrl);
+@endphp
+
 <tr>
 <td class="header">
-<a href="{{ config('app.url') }}" style="display: inline-block;">
-@if (trim($slot) === 'Laravel')
-<img src="{{ central_asset(uploaded_asset(get_setting('logo'))) }}" class="logo" alt="App Logo">
+<a href="{{ $url }}" class="brand-link" style="display: inline-block;" target="_blank" rel="noopener">
+@if ($hasLogo)
+<img src="{{ $logoUrl }}" class="logo" alt="{{ $brandName }} logo">
 @else
-{{ $slot }}
+<span class="brand-name">{{ $brandName }}</span>
 @endif
 </a>
 </td>

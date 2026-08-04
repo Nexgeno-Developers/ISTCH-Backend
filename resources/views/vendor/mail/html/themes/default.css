@@ -10,8 +10,8 @@ body *:not(html):not(style):not(br):not(tr):not(code) {
 
 body {
     -webkit-text-size-adjust: none;
-    background-color: #ffffff;
-    color: #718096;
+    background-color: #e8eff5;
+    color: #6b7f99;
     height: 100%;
     line-height: 1.4;
     margin: 0;
@@ -28,7 +28,7 @@ blockquote {
 }
 
 a {
-    color: #3869d4;
+    color: #1769d5;
 }
 
 a img {
@@ -38,22 +38,25 @@ a img {
 /* Typography */
 
 h1 {
-    color: #3d4852;
-    font-size: 18px;
+    color: #2f4a6d;
+    font-size: 28px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
+    margin-bottom: 22px;
 }
 
 h2 {
-    font-size: 16px;
+    color: #2f4a6d;
+    font-size: 20px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
 }
 
 h3 {
-    font-size: 14px;
+    color: #2f4a6d;
+    font-size: 16px;
     font-weight: bold;
     margin-top: 0;
     text-align: left;
@@ -64,6 +67,7 @@ p {
     line-height: 1.5em;
     margin-top: 0;
     text-align: left;
+    color: #6b7f99;
 }
 
 p.sub {
@@ -80,9 +84,10 @@ img {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
-    background-color: #edf2f7;
+    background:
+        linear-gradient(180deg, #1d7faa 0, #1d7faa 14px, #e8eff5 14px, #e8eff5 100%);
     margin: 0;
-    padding: 0;
+    padding: 26px 0 34px;
     width: 100%;
 }
 
@@ -98,23 +103,36 @@ img {
 /* Header */
 
 .header {
-    padding: 25px 0;
+    padding: 8px 0 22px;
     text-align: center;
 }
 
 .header a {
-    color: #3d4852;
+    color: #2f4a6d;
     font-size: 19px;
     font-weight: bold;
     text-decoration: none;
 }
 
+.brand-link {
+    text-align: center;
+}
+
+.brand-name {
+    color: #2f4a6d;
+    display: inline-block;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 /* Logo */
 
 .logo {
-    height: 75px;
-    max-height: 75px;
-    width: 75px;
+    max-height: 78px;
+    max-width: 220px;
+    width: auto;
 }
 
 /* Body */
@@ -123,9 +141,9 @@ img {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
-    background-color: #edf2f7;
-    border-bottom: 1px solid #edf2f7;
-    border-top: 1px solid #edf2f7;
+    background-color: #e8eff5;
+    border-bottom: 1px solid #e8eff5;
+    border-top: 1px solid #e8eff5;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -136,10 +154,10 @@ img {
     -premailer-cellspacing: 0;
     -premailer-width: 570px;
     background-color: #ffffff;
-    border-color: #e8e5ef;
-    border-radius: 2px;
+    border-color: #dfe7f0;
+    border-radius: 18px;
     border-width: 1px;
-    box-shadow: 0 2px 0 rgba(0, 0, 150, 0.025), 2px 4px 0 rgba(0, 0, 150, 0.015);
+    box-shadow: 0 18px 42px rgba(33, 63, 94, 0.08);
     margin: 0 auto;
     padding: 0;
     width: 570px;
@@ -152,7 +170,7 @@ img {
 /* Subcopy */
 
 .subcopy {
-    border-top: 1px solid #e8e5ef;
+    border-top: 1px solid #dfe7f0;
     margin-top: 25px;
     padding-top: 25px;
 }
@@ -174,13 +192,13 @@ img {
 }
 
 .footer p {
-    color: #b0adc5;
+    color: #7c8ea5;
     font-size: 12px;
     text-align: center;
 }
 
 .footer a {
-    color: #b0adc5;
+    color: #7c8ea5;
     text-decoration: underline;
 }
 
@@ -195,13 +213,13 @@ img {
 }
 
 .table th {
-    border-bottom: 1px solid #edeff2;
+    border-bottom: 1px solid #dfe7f0;
     margin: 0;
     padding-bottom: 8px;
 }
 
 .table td {
-    color: #74787e;
+    color: #6b7f99;
     font-size: 15px;
     line-height: 18px;
     margin: 0;
@@ -210,7 +228,7 @@ img {
 
 .content-cell {
     max-width: 100vw;
-    padding: 32px;
+    padding: 40px 42px;
 }
 
 /* Buttons */
@@ -228,7 +246,7 @@ img {
 
 .button {
     -webkit-text-size-adjust: none;
-    border-radius: 4px;
+    border-radius: 999px;
     color: #fff;
     display: inline-block;
     overflow: hidden;
@@ -237,11 +255,11 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #2d3748;
-    border-bottom: 8px solid #2d3748;
-    border-left: 18px solid #2d3748;
-    border-right: 18px solid #2d3748;
-    border-top: 8px solid #2d3748;
+    background-color: #2f4a6d;
+    border-bottom: 8px solid #2f4a6d;
+    border-left: 18px solid #2f4a6d;
+    border-right: 18px solid #2f4a6d;
+    border-top: 8px solid #2f4a6d;
 }
 
 .button-green,
@@ -265,18 +283,18 @@ img {
 /* Panels */
 
 .panel {
-    border-left: #2d3748 solid 4px;
+    border-left: #1d7faa solid 4px;
     margin: 21px 0;
 }
 
 .panel-content {
-    background-color: #edf2f7;
-    color: #718096;
+    background-color: #f2f7fb;
+    color: #6b7f99;
     padding: 16px;
 }
 
 .panel-content p {
-    color: #718096;
+    color: #6b7f99;
 }
 
 .panel-item {
@@ -292,4 +310,46 @@ img {
 
 .break-all {
     word-break: break-all;
+}
+
+.mail-card-title {
+    color: #2f4a6d;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 24px;
+}
+
+.mail-field-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.mail-field-row td {
+    border-bottom: 1px solid #edf3f8;
+    padding: 14px 0;
+    vertical-align: top;
+}
+
+.mail-field-row:last-child td {
+    border-bottom: 0;
+}
+
+.mail-field-label {
+    color: #5f7898;
+    font-size: 15px;
+    font-weight: 700;
+    padding-right: 18px;
+    white-space: nowrap;
+    width: 34%;
+}
+
+.mail-field-value {
+    color: #6b7f99;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.mail-signoff {
+    color: #6b7f99;
+    margin-top: 28px;
 }
