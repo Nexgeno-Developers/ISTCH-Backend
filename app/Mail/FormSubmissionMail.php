@@ -1,17 +1,13 @@
 <?php
 
-// app/Mail/FormSubmissionMail.php
-
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
+use App\Models\Upload;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-//class FormSubmissionMail extends Mailable implements ShouldQueue
 class FormSubmissionMail extends Mailable
 {
-    //use Queueable, SerializesModels;
     use SerializesModels;
 
     public string $formName;
@@ -28,13 +24,148 @@ class FormSubmissionMail extends Mailable
     {
         $mail = $this
             ->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject('New '.ucfirst(str_replace('_', ' ', $this->formName)).' submission - '.config('app.name'))
-            ->markdown('emails.form_submission');
+            ->subject($this->subjectLine())
+            ->view('emails.form_submission_html', [
+                'brandName' => $this->brandName(),
+                'brandWebsite' => $this->brandWebsite(),
+                'emailTitle' => $this->emailTitle(),
+                'rows' => $this->formattedRows(),
+                'logoPath' => $this->logoPath(),
+                'logoUrl' => $this->logoUrl(),
+            ]);
 
         if (filter_var($this->data['email'] ?? null, FILTER_VALIDATE_EMAIL)) {
             $mail->replyTo($this->data['email'], $this->data['name'] ?? $this->data['full_name'] ?? null);
         }
 
         return $mail;
+    }
+
+    private function subjectLine(): string
+    {
+        return 'New '.$this->readableFormName().' submission - '.config('app.name');
+    }
+
+    private function emailTitle(): string
+    {
+        return $this->readableFormName().' Form Submission';
+    }
+
+    private function readableFormName(): string
+    {
+        return ucfirst(str_replace('_', ' ', $this->formName));
+    }
+
+    private function brandName(): string
+    {
+        return (string) get_setting('name', config('app.name'));
+    }
+
+    private function brandWebsite(): string
+    {
+        $website = (string) get_setting('website', '');
+
+        if ($website !== '') {
+            if (! str_starts_with($website, 'http://') && ! str_starts_with($website, 'https://')) {
+                return 'https://'.$website;
+            }
+
+            return $website;
+        }
+
+        return (string) config('app.url');
+    }
+
+    private function logoPath(): ?string
+    {
+        $logo = $this->logoUpload();
+
+        if (! $logo || filled($logo->external_link) || blank($logo->file_name)) {
+            return null;
+        }
+
+        $path = public_path($logo->file_name);
+
+        return is_file($path) ? $path : null;
+    }
+
+    private function logoUrl(): ?string
+    {
+        $logo = $this->logoUpload();
+
+        if ($logo) {
+            if (filled($logo->external_link)) {
+                return (string) $logo->external_link;
+            }
+
+            if (filled($logo->file_name)) {
+                return central_asset($logo->file_name);
+            }
+        }
+
+        $fallbackPath = public_path('assets/backend/img/logo.png');
+
+        if (is_file($fallbackPath)) {
+            return central_asset('assets/backend/img/logo.png');
+        }
+
+        return null;
+    }
+
+    private function logoUpload(): ?Upload
+    {
+        $logoId = get_setting('logo');
+
+        if (! filled($logoId)) {
+            return null;
+        }
+
+        return Upload::find($logoId);
+    }
+
+    /**
+     * @return array<int, array{label: string, value: string}>
+     */
+    private function formattedRows(): array
+    {
+        $rows = [];
+
+        foreach ($this->data as $key => $value) {
+            $rows[] = [
+                'label' => ucwords(str_replace('_', ' ', (string) $key)),
+                'value' => $this->formatValue($value),
+            ];
+        }
+
+        return $rows;
+    }
+
+    private function formatValue(mixed $value): string
+    {
+        if (is_bool($value)) {
+            return $value ? 'Yes' : 'No';
+        }
+
+        if (is_array($value)) {
+            $items = array_map(function ($item) {
+                if (is_scalar($item) || $item === null) {
+                    return $this->formatValue($item);
+                }
+
+                return json_encode($item, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: 'N/A';
+            }, $value);
+
+            $items = array_values(array_filter(array_map('trim', $items), fn ($item) => $item !== ''));
+
+            return $items !== [] ? implode(', ', $items) : 'N/A';
+        }
+
+        if ($value === null) {
+            return 'N/A';
+        }
+
+        $string = trim((string) $value);
+
+        return $string !== '' ? $string : 'N/A';
     }
 }
