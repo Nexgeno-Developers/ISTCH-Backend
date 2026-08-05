@@ -1,7 +1,7 @@
 @extends('emails.layouts.base')
 
 @section('content')
-    <div style="font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:700;line-height:1.35;color:#2f4a6d;margin:0 0 24px;">
+    <div style="font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:700;line-height:1.35;color:#2f4a6d;margin:0 0 24px;text-align:center;">
         {{ $emailTitle }}
     </div>
 
@@ -16,14 +16,5 @@
                 </td>
             </tr>
         @endforeach
-    </table>
-
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">
-        <tr>
-            <td style="padding-top:28px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.65;color:#6b7f99;text-align:left;">
-                <div>Thanks,</div>
-                <div>{{ $brandName }}</div>
-            </td>
-        </tr>
     </table>
 @endsection

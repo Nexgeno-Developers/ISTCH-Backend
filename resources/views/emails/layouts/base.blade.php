@@ -6,13 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $brandName }}</title>
 </head>
-<body style="margin:0;padding:0;background-color:#e8eff5;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin:0;padding:0;background-color:#e8eff5;border-collapse:collapse;">
+<body style="margin:0;padding:0;background-color:#fdf3e6;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin:0;padding:0;background-color:#fdf3e6;border-collapse:collapse;">
         <tr>
-            <td style="height:16px;line-height:16px;font-size:0;background-color:#1d7faa;">&nbsp;</td>
-        </tr>
-        <tr>
-            <td align="center" style="padding:22px 12px 36px;background-color:#e8eff5;">
+            <td align="center" style="padding:28px 12px 36px;background-color:#fdf3e6;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:620px;border-collapse:collapse;">
                     <tr>
                         <td align="center" style="padding:0 0 26px;">
