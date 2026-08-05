@@ -9,6 +9,7 @@
     $disclaimer_items = is_array($disclaimer_items) ? $disclaimer_items : [];
 
     $breadcrumb_title = $metaValue('breadcrumb_title');
+    $hero_image = $metaValue('hero_image');
     $footer_title = $metaValue('footer_title');
     $footer_button_text = $metaValue('footer_button_text');
     $footer_button_url = $metaValue('footer_button_url');
@@ -23,6 +24,27 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Title</label>
         <input class="form-control" value="{{ $breadcrumb_title }}" name="meta[breadcrumb_title]" type="text" placeholder="Enter title">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr>
+        <h4 class="text-primary">Hero Section</h4>
+    </div>
+
+    <div class="col-md-12">
+        <div class="form-group mb-2">
+            <label class="form-label">Image</label>
+            <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ __('Browse') }}</div>
+                </div>
+                <div class="form-control file-amount">{{ __('Choose File') }}</div>
+                <input type="hidden" name="meta[hero_image]" class="selected-files" value="{{ $hero_image }}">
+            </div>
+            <div class="file-preview box sm"></div>
+        </div>
     </div>
 </div>
 
