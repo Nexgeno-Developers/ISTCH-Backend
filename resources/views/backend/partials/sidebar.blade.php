@@ -177,7 +177,7 @@
         </li>--}}        
 
         <li class="side-nav-item">
-            <a target="_blank" href="{{ url('') . '/command/optimize-clear?back=true' }}" class="side-nav-link text-danger fw-bold">
+            <a target="_blank" href="{{ route('backend.command.optimize-clear', ['back' => true]) }}" class="side-nav-link text-danger fw-bold">
                 <span class="menu-icon"><i class="ti ti-refresh"></i></span>
                 <span class="menu-text"> CMS Clear Cache </span>
             </a>

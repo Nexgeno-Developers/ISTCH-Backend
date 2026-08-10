@@ -125,6 +125,7 @@ class CommandController extends Controller
     
     public function optimizeClear(Request $request)
     {
+        $this->checkAccess();
         Artisan::call('optimize:clear');
 
         if ($request->has('back') && $request->boolean('back')) {

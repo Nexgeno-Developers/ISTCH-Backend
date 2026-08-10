@@ -9,6 +9,7 @@ use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class FormSubmissionController extends Controller
 {
@@ -158,7 +159,7 @@ class FormSubmissionController extends Controller
             abort(422, 'File too large');
         }
 
-        $extension = strtolower($file->getClientOriginalExtension() ?: $file->extension() ?: 'bin');
+        $extension = $this->extensionFromMime($mimeType);
         $date = date('Y/m');
 
         // Store on the `public` disk and return the storage-relative public path.
@@ -170,6 +171,18 @@ class FormSubmissionController extends Controller
 
         // The stored value is designed to be compatible with `my_asset($value)`.
         return 'storage/'.$path;
+    }
+
+    private function extensionFromMime(string $mimeType): string
+    {
+        return match (strtolower($mimeType)) {
+            'application/pdf' => 'pdf',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            default => 'bin',
+        };
     }
 
     private function getValidationRules(string $formName): array
@@ -193,23 +206,7 @@ class FormSubmissionController extends Controller
                     'availability' => 'required|string|max:100',
                 ];
 
-            // case 'ambassador_application':
-            //     return [
-            //         'form_name' => 'required|max:50',
-            //         'company_id' => 'nullable|integer|exists:companies,id',
-            //         'name' => 'required_without:full_name|nullable|string|max:50',
-            //         'full_name' => 'required_without:name|nullable|string|max:50',
-            //         'email' => 'required|email|max:50',
-            //         'phone' => 'nullable|string|max:20',
-            //         'age' => 'required|integer|min:1|max:120',
-            //         'country' => 'required|string|max:50',
-            //         // 'occupation' => 'required|string|max:100',
-            //         // 'motivation' => 'required|string|max:500',
-            //         'previous_experience' => 'nullable|string|max:500',
-            //         // 'key_skills' => 'nullable|string|max:500',
-            //         // 'vision_for_impact' => 'nullable|string|max:500',
-            //         'availability' => 'required|string|max:100',
-            //     ];
+
 
             case 'contact':
                 return [
@@ -225,10 +222,9 @@ class FormSubmissionController extends Controller
                 ];
 
             default:
-                return [
-                    'form_name' => 'required|max:20',
-                    'company_id' => 'nullable|integer|exists:companies,id',
-                ];
+                throw ValidationException::withMessages([
+                    'form_name' => ['Unsupported form_name.'],
+                ]);
         }
     }
 }
