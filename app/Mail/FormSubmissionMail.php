@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Payment;
 use App\Models\Upload;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -133,23 +134,27 @@ class FormSubmissionMail extends Mailable
         foreach ($this->data as $key => $value) {
             $rows[] = [
                 'label' => ucwords(str_replace('_', ' ', (string) $key)),
-                'value' => $this->formatValue($value),
+                'value' => $this->formatValue((string) $key, $value),
             ];
         }
 
         return $rows;
     }
 
-    private function formatValue(mixed $value): string
+    private function formatValue(string $key, mixed $value): string
     {
+        if ($key === 'payment_type' && is_scalar($value) && $value !== null) {
+            return $this->formatPaymentType((string) $value);
+        }
+
         if (is_bool($value)) {
             return $value ? 'Yes' : 'No';
         }
 
         if (is_array($value)) {
-            $items = array_map(function ($item) {
+            $items = array_map(function ($item) use ($key) {
                 if (is_scalar($item) || $item === null) {
-                    return $this->formatValue($item);
+                    return $this->formatValue($key, $item);
                 }
 
                 return json_encode($item, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: 'N/A';
@@ -167,5 +172,16 @@ class FormSubmissionMail extends Mailable
         $string = trim((string) $value);
 
         return $string !== '' ? $string : 'N/A';
+    }
+
+    private function formatPaymentType(string $value): string
+    {
+        $normalized = trim($value);
+
+        if ($normalized === Payment::TYPE_ONE_TIME) {
+            return 'One-Time';
+        }
+
+        return ucfirst(str_replace('_', ' ', strtolower($normalized)));
     }
 }
