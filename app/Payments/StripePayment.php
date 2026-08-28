@@ -3,6 +3,7 @@
 namespace App\Payments;
 
 use App\Models\Payment;
+use Illuminate\Support\Facades\Crypt;
 use Stripe\Checkout\Session;
 use Stripe\StripeClient;
 
@@ -50,8 +51,8 @@ class StripePayment
     public function createCheckoutSession(Payment $payment): Session
     {
         $amountInSmallestUnit = $this->toSmallestUnit((float) $payment->amount, $payment->currency);
-        $successUrl = route('payment.success.page', ['payment' => $payment->id]);
-        $cancelUrl = route('payment.cancel.page', ['payment' => $payment->id]);
+        $successUrl = route('payment.success.page', ['token' => $this->callbackToken($payment, 'success')]);
+        $cancelUrl = route('payment.cancel.page', ['token' => $this->callbackToken($payment, 'cancel')]);
 
         $lineItem = [
             'price_data' => [
@@ -114,12 +115,6 @@ class StripePayment
         return $this->client()->checkout->sessions->retrieve($sessionId, []);
     }
 
-    /**
-     * Configuration metadata that is safe to include in application logs.
-     * Secret and publishable key values must never be returned here.
-     *
-     * @return array<string, bool|string>
-     */
     public function safeConfigurationContext(): array
     {
         $mode = strtolower(trim((string) config('services.stripe.mode', 'sandbox')));
@@ -232,6 +227,15 @@ class StripePayment
     public function reconcileOldPendingPayments(int $olderThanDays = 7, ?int $limit = null): array
     {
         return $this->reconcilePendingPayments($limit, $olderThanDays);
+    }
+
+    private function callbackToken(Payment $payment, string $statusPage): string
+    {
+        return Crypt::encryptString(json_encode([
+            'payment_id' => $payment->id,
+            'payment_group_id' => $payment->payment_group_id,
+            'status_page' => $statusPage,
+        ]));
     }
 
     private function toSmallestUnit(float $amount, string $currency): int

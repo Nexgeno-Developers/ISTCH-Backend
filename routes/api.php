@@ -18,47 +18,27 @@ Route::post('donate', [PaymentController::class, 'donate'])
     ->middleware('throttle:10,1');
 
 Route::prefix('v1')->group(function () {
-    // Menu group (and its active item tree)
     Route::get('menus/groups/{id}', [MenuController::class, 'showById'])->whereNumber('id');
     Route::get('menus/groups/by-name/{name}', [MenuController::class, 'showByName']);
 
-    // Company info by company id
     Route::get('companies/{id}', [CompanyController::class, 'showById'])->whereNumber('id');
 
-    // Public form submission API (expects multipart/form-data when uploading files).
     Route::post('forms/submit', [FormSubmissionController::class, 'submit'])
-        ->middleware(['protect.forms', 'throttle:10,1']);
+        ->middleware(['protect.forms', 'recaptcha', 'throttle:10,1']);
 
-    // Page by id OR slug/path slug
     Route::get('page/{id}', [PageController::class, 'showById'])->whereNumber('id');
     Route::get('page/{slug}', [PageController::class, 'showBySlug'])->where('slug', '.*');
 
-    // Posts
     Route::get('posts', [PostController::class, 'index']);
     Route::get('posts/{slug}', [PostController::class, 'showBySlug'])->where('slug', '.*');
 
-    // Categories
     Route::get('categories', [CategoryController::class, 'index']);
-    // Route::get('categories/{slug}/posts', [CategoryController::class, 'postsBySlug'])->where('slug', '.*');
     Route::get('categories/{slug_or_id}', [CategoryController::class, 'show'])
         ->where('slug_or_id', '^(?!.*\\/posts$).*$');
 
-    // Tags
-    // Route::get('tags', [TagController::class, 'index']);
-    // Route::get('tags/{slug}/posts', [TagController::class, 'postsBySlug'])->where('slug', '.*');
-
-    // Authors
-    // Route::get('authors', [AuthorController::class, 'index']);
-    // Route::get('authors/{id}', [AuthorController::class, 'showById'])->whereNumber('id');
-    // Route::get('authors/{id}/posts', [AuthorController::class, 'postsById'])->whereNumber('id');
-
-    // Sitemap slugs for frontend sitemap generation
     Route::get('sitemap', [SitemapController::class, 'index']);
-
-    // robots.txt content (for frontend file generation)
     Route::get('robots-txt', [SeoSettingController::class, 'robotsTxt']);
 
-    // Payments
     Route::get('payments/currencies', [PaymentController::class, 'currencies']);
     Route::post('donate', [PaymentController::class, 'donate'])->middleware('throttle:10,1')->name('donation.submit');
     Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');

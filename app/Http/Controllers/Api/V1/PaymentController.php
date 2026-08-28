@@ -11,8 +11,10 @@ use App\Models\Payment;
 use App\Payments\StripeConfigurationException;
 use App\Payments\StripePayment;
 use App\Services\CurrencyService;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -84,8 +86,6 @@ class PaymentController extends Controller
         $donationForm = null;
 
         try {
-            // Persist the donation before contacting Stripe so the submission is
-            // retained even if the payment provider is temporarily unavailable.
             $payment = Payment::create([
                 'full_name' => $validated['full_name'],
                 'email' => $validated['email'],
@@ -169,12 +169,7 @@ class PaymentController extends Controller
 
     public function success(Request $request, StripePayment $stripePayment): JsonResponse
     {
-        if (! $this->validPaymentId($request)) {
-            return response()->json(['message' => 'Payment not found.'], 404);
-        }
-
-        $payment = Payment::find($request->query('payment'));
-
+        $payment = $this->resolvePaymentFromRequest($request, 'success');
         if (! $payment) {
             return response()->json(['message' => 'Payment not found.'], 404);
         }
@@ -224,19 +219,9 @@ class PaymentController extends Controller
 
     public function cancel(Request $request): JsonResponse
     {
-        if (! $this->validPaymentId($request)) {
-            return response()->json(['message' => 'Payment not found.'], 404);
-        }
-
-        $payment = Payment::find($request->query('payment'));
-
+        $payment = $this->resolvePaymentFromRequest($request, 'cancel');
         if (! $payment) {
             return response()->json(['message' => 'Payment not found.'], 404);
-        }
-
-        if ($payment->payment_status === Payment::STATUS_PENDING) {
-            $payment->forceFill(['payment_status' => Payment::STATUS_CANCELLED])->save();
-            $payment->refresh();
         }
 
         return response()->json([
@@ -250,11 +235,48 @@ class PaymentController extends Controller
         return 1;
     }
 
-    private function validPaymentId(Request $request): bool
+    private function resolvePaymentFromRequest(Request $request, ?string $expectedStatusPage = null): ?Payment
     {
-        $paymentId = (string) $request->query('payment', '');
+        $sessionId = trim((string) $request->query('session_id', ''));
+        if ($sessionId !== '') {
+            return Payment::where('stripe_checkout_session_id', $sessionId)->first();
+        }
 
-        return ctype_digit($paymentId) && (int) $paymentId > 0;
+        $token = trim((string) $request->query('token', ''));
+        if ($token === '') {
+            return null;
+        }
+
+        try {
+            $payload = json_decode(Crypt::decryptString($token), true, 512, JSON_THROW_ON_ERROR);
+        } catch (DecryptException|\JsonException) {
+            return null;
+        }
+
+        if (! is_array($payload)) {
+            return null;
+        }
+
+        $paymentId = $payload['payment_id'] ?? null;
+        $paymentGroupId = $payload['payment_group_id'] ?? null;
+        $statusPage = $payload['status_page'] ?? null;
+
+        if ($expectedStatusPage !== null && $statusPage !== $expectedStatusPage) {
+            return null;
+        }
+
+        if (! is_string($paymentGroupId) || trim($paymentGroupId) === '') {
+            return null;
+        }
+
+        if (! is_int($paymentId) && ! (is_string($paymentId) && ctype_digit($paymentId))) {
+            return null;
+        }
+
+        return Payment::query()
+            ->whereKey((int) $paymentId)
+            ->where('payment_group_id', $paymentGroupId)
+            ->first();
     }
 
     private function providerUnavailableResponse(): JsonResponse

@@ -6,8 +6,10 @@ use App\Models\Currency;
 use App\Models\Payment;
 use App\Payments\StripePayment;
 use App\Services\CurrencyService;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
@@ -30,11 +32,10 @@ class HomeController extends Controller
 
     public function success(Request $request, StripePayment $stripePayment): RedirectResponse
     {
-        abort_unless($this->validPaymentId($request), 404);
+        $payment = $this->resolvePaymentFromRequest($request, 'success');
+        abort_unless($payment, 404);
 
-        $payment = Payment::find($request->query('payment'));
-
-        if ($payment && $payment->stripe_checkout_session_id) {
+        if ($payment->stripe_checkout_session_id) {
             try {
                 $session = $stripePayment->retrieveCheckoutSession($payment->stripe_checkout_session_id);
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'frontend_success_page');
@@ -47,22 +48,14 @@ class HomeController extends Controller
             }
         }
 
-        // return view('payments.success', compact('payment'));
         return redirect()->away($this->frontendPaymentUrl('success', $payment));
     }
 
     public function cancel(Request $request): RedirectResponse
     {
-        abort_unless($this->validPaymentId($request), 404);
+        $payment = $this->resolvePaymentFromRequest($request, 'cancel');
+        abort_unless($payment, 404);
 
-        $payment = Payment::find($request->query('payment'));
-
-        if ($payment && $payment->payment_status === Payment::STATUS_PENDING) {
-            $payment->forceFill(['payment_status' => Payment::STATUS_CANCELLED])->save();
-            $payment->refresh();
-        }
-
-        // return view('payments.cancel', compact('payment'));
         return redirect()->away($this->frontendPaymentUrl('cancel', $payment));
     }
 
@@ -97,11 +90,48 @@ class HomeController extends Controller
         ]);
     }
 
-    private function validPaymentId(Request $request): bool
+    private function resolvePaymentFromRequest(Request $request, ?string $expectedStatusPage = null): ?Payment
     {
-        $paymentId = (string) $request->query('payment', '');
+        $sessionId = trim((string) $request->query('session_id', ''));
+        if ($sessionId !== '') {
+            return Payment::where('stripe_checkout_session_id', $sessionId)->first();
+        }
 
-        return ctype_digit($paymentId) && (int) $paymentId > 0;
+        $token = trim((string) $request->query('token', ''));
+        if ($token === '') {
+            return null;
+        }
+
+        try {
+            $payload = json_decode(Crypt::decryptString($token), true, 512, JSON_THROW_ON_ERROR);
+        } catch (DecryptException|\JsonException) {
+            return null;
+        }
+
+        if (! is_array($payload)) {
+            return null;
+        }
+
+        $paymentId = $payload['payment_id'] ?? null;
+        $paymentGroupId = $payload['payment_group_id'] ?? null;
+        $statusPage = $payload['status_page'] ?? null;
+
+        if ($expectedStatusPage !== null && $statusPage !== $expectedStatusPage) {
+            return null;
+        }
+
+        if (! is_string($paymentGroupId) || trim($paymentGroupId) === '') {
+            return null;
+        }
+
+        if (! is_int($paymentId) && ! (is_string($paymentId) && ctype_digit($paymentId))) {
+            return null;
+        }
+
+        return Payment::query()
+            ->whereKey((int) $paymentId)
+            ->where('payment_group_id', $paymentGroupId)
+            ->first();
     }
 
     private function base64UrlEncode(string $value): string
