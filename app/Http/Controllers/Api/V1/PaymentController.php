@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Helpers\AdminMailHelper;
 use App\Http\Controllers\Controller;
-use App\Mail\FormSubmissionMail;
 use App\Models\Currency;
 use App\Models\Form;
 use App\Models\Payment;
@@ -112,7 +110,6 @@ class PaymentController extends Controller
             $payment->setAttribute('checkout_url', $session->url);
             $this->syncDonationForm($donationForm, $payment);
 
-            $this->notifyAdmin($payment);
 
             return response()->json([
                 'message' => 'Checkout session created.',
@@ -302,7 +299,6 @@ class PaymentController extends Controller
             ],
         ]);
         $this->syncDonationForm($form, $payment);
-        $this->notifyAdmin($payment->fresh());
     }
 
     private function createDonationForm(Payment $payment): Form
@@ -343,21 +339,6 @@ class PaymentController extends Controller
         ];
     }
 
-    private function notifyAdmin(Payment $payment): void
-    {
-        AdminMailHelper::send(new FormSubmissionMail('donation', [
-            'full_name' => $payment->full_name,
-            'email' => $payment->email,
-            'phone' => $payment->phone,
-            'country' => $payment->country,
-            'payment_type' => $payment->payment_type,
-            'currency' => $payment->currency,
-            'amount' => $payment->amount,
-            'usd_amount' => $payment->usd_amount,
-            'payment_status' => $payment->payment_status,
-            'payment_group_id' => $payment->payment_group_id,
-        ]), null, 'notify_admin');
-    }
 
     private function paymentData(Payment $payment): array
     {
@@ -376,4 +357,5 @@ class PaymentController extends Controller
         ];
     }
 }
+
 
