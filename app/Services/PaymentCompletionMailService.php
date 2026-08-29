@@ -9,6 +9,51 @@ use Illuminate\Support\Facades\DB;
 
 class PaymentCompletionMailService
 {
+    public function sendPendingNotification(Payment $payment): bool
+    {
+        $payment->refresh();
+
+        if ($payment->payment_status !== Payment::STATUS_PENDING) {
+            return false;
+        }
+
+        $sentAt = data_get($payment->meta, 'notifications.payment_started_email.sent_at');
+        if (is_string($sentAt) && trim($sentAt) !== '') {
+            return false;
+        }
+
+        $sent = AdminMailHelper::send(
+            new FormSubmissionMail('donation', [
+                'full_name' => $payment->full_name,
+                'email' => $payment->email,
+                'phone' => $payment->phone,
+                'country' => $payment->country,
+                'payment_type' => $payment->payment_type,
+                'currency' => $payment->currency,
+                'amount' => $payment->amount,
+                'usd_amount' => $payment->usd_amount,
+                'payment_status' => $payment->payment_status,
+                'payment_group_id' => $payment->payment_group_id,
+            ]),
+            null,
+            'notify_admin'
+        );
+
+        if (! $sent) {
+            return false;
+        }
+
+        $payment->mergeMeta([
+            'notifications' => [
+                'payment_started_email' => [
+                    'sent_at' => now()->toIso8601String(),
+                ],
+            ],
+        ]);
+
+        return true;
+    }
+
     public function sendPaidNotificationIfNeeded(Payment $payment, string $source): bool
     {
         $reservedPayment = DB::transaction(function () use ($payment, $source) {
@@ -58,7 +103,6 @@ class PaymentCompletionMailService
                 'payment_status' => $reservedPayment->payment_status,
                 'payment_group_id' => $reservedPayment->payment_group_id,
                 'paid_at' => optional($reservedPayment->paid_at)->toIso8601String(),
-                'stripe_checkout_session_id' => $reservedPayment->stripe_checkout_session_id,
             ]),
             null,
             'notify_admin'

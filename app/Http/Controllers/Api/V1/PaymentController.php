@@ -35,7 +35,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function donate(Request $request, CurrencyService $currencyService, StripePayment $stripePayment): JsonResponse
+    public function donate(Request $request, CurrencyService $currencyService, StripePayment $stripePayment, PaymentCompletionMailService $paymentCompletionMailService): JsonResponse
     {
         $activeCurrencyCodes = Currency::where('is_active', true)->pluck('code')->toArray();
 
@@ -109,6 +109,7 @@ class PaymentController extends Controller
             $session = $stripePayment->createCheckoutSession($payment);
             $payment->setAttribute('checkout_url', $session->url);
             $this->syncDonationForm($donationForm, $payment);
+            $paymentCompletionMailService->sendPendingNotification($payment);
 
 
             return response()->json([
@@ -165,7 +166,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function success(Request $request, StripePayment $stripePayment): JsonResponse
+    public function success(Request $request, StripePayment $stripePayment, PaymentCompletionMailService $paymentCompletionMailService): JsonResponse
     {
         $payment = $this->resolvePaymentFromRequest($request, 'success');
         if (! $payment) {
@@ -177,6 +178,7 @@ class PaymentController extends Controller
                 $session = $stripePayment->retrieveCheckoutSession($payment->stripe_checkout_session_id);
                 $stripePayment->syncPaymentFromCheckoutSession($payment, $session, 'success_page_verified');
                 $payment->refresh();
+                $paymentCompletionMailService->sendPaidNotificationIfNeeded($payment, 'api_success_page');
             } catch (StripeConfigurationException|AuthenticationException $e) {
                 Log::critical('Stripe payment verification configuration is unavailable.', array_merge(
                     $stripePayment->safeConfigurationContext(),
@@ -357,5 +359,6 @@ class PaymentController extends Controller
         ];
     }
 }
+
 
 
