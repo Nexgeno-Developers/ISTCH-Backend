@@ -11,7 +11,11 @@ class PaymentCompletionMailService
 {
     public function sendPendingNotification(Payment $payment): bool
     {
-        $payment->refresh();
+        $payment = $payment->fresh();
+
+        if (! $payment) {
+            return false;
+        }
 
         if ($payment->payment_status !== Payment::STATUS_PENDING) {
             return false;

@@ -107,7 +107,7 @@ class PaymentController extends Controller
             $donationForm = $this->createDonationForm($payment);
 
             $session = $stripePayment->createCheckoutSession($payment);
-            $payment->setAttribute('checkout_url', $session->url);
+            $checkoutUrl = is_string($session->url ?? null) ? $session->url : null;
             $this->syncDonationForm($donationForm, $payment);
             $paymentCompletionMailService->sendPendingNotification($payment);
 
@@ -120,7 +120,7 @@ class PaymentController extends Controller
                     'payment_status' => $payment->payment_status,
                     'form_submission_id' => $donationForm->id,
                     'checkout_session_id' => $payment->stripe_checkout_session_id,
-                    'checkout_url' => $payment->getAttribute('checkout_url'),
+                    'checkout_url' => $checkoutUrl,
                 ],
             ], 201);
         } catch (StripeConfigurationException|AuthenticationException $e) {
