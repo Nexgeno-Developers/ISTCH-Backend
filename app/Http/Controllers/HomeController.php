@@ -6,6 +6,7 @@ use App\Models\Currency;
 use App\Models\Payment;
 use App\Payments\StripePayment;
 use App\Services\CurrencyService;
+use App\Services\PaymentCompletionMailService;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -139,3 +140,4 @@ class HomeController extends Controller
         return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
     }
 }
+

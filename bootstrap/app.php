@@ -4,13 +4,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-//New Middlewares
 use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\AllowBackendAccess;
 use App\Http\Middleware\ProtectForms;
 use App\Http\Middleware\VerifyRecaptcha;
 use App\Http\Middleware\TrackVisitors;
+use App\Http\Middleware\SetApiCacheHeaders;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,7 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'stripe/webhook',
         ]);
 
-        // Alias middleware for Spatie permission package (v6+ uses singular 'Middleware' namespace)
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
@@ -32,26 +31,32 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->appendToGroup('auth.backend', [
-            RedirectIfNotAuthenticated::class
+            RedirectIfNotAuthenticated::class,
         ]);
 
         $middleware->appendToGroup('auth.guest', [
-            RedirectIfAuthenticated::class
-        ]);      
+            RedirectIfAuthenticated::class,
+        ]);
+
         $middleware->appendToGroup('auth.backend.access', [
-            AllowBackendAccess::class
-        ]);  
+            AllowBackendAccess::class,
+        ]);
+
         $middleware->appendToGroup('protect.forms', [
-            ProtectForms::class
-        ]);   
+            ProtectForms::class,
+        ]);
+
         $middleware->appendToGroup('recaptcha', [
-            VerifyRecaptcha::class
-        ]);   
-        
-        //Global
+            VerifyRecaptcha::class,
+        ]);
+
+        $middleware->appendToGroup('api', [
+            SetApiCacheHeaders::class,
+        ]);
+
         $middleware->append([
-            \App\Http\Middleware\TrackVisitors::class,
-        ]);        
+            TrackVisitors::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

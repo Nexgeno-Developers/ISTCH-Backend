@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Services\PaymentCompletionMailService;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\AuthenticationException;
 
@@ -375,3 +376,4 @@ class PaymentController extends Controller
         ];
     }
 }
+

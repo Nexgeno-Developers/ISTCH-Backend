@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Payment;
+use App\Services\PaymentCompletionMailService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -19,28 +20,28 @@ class ProcessStripeWebhook implements ShouldQueue
     {
     }
 
-    public function handle(): void
+    public function handle(PaymentCompletionMailService $paymentCompletionMailService): void
     {
         $type = $this->event['type'] ?? '';
         $object = $this->event['data']['object'] ?? [];
 
         match ($type) {
-            'checkout.session.completed' => $this->handleCheckoutSessionCompleted($object),
-            'payment_intent.succeeded' => $this->handlePaymentIntentSucceeded($object),
+            'checkout.session.completed' => $this->handleCheckoutSessionCompleted($object, $paymentCompletionMailService),
+            'payment_intent.succeeded' => $this->handlePaymentIntentSucceeded($object, $paymentCompletionMailService),
             'payment_intent.payment_failed' => $this->handlePaymentIntentFailed($object),
             'invoice.created' => $this->handleInvoiceCreated($object),
-            'invoice.paid' => $this->handleInvoicePaid($object),
-            'invoice.payment_succeeded' => $this->handleInvoicePaid($object),
-            'invoice_payment.paid' => $this->handleInvoicePaymentPaid($object),
+            'invoice.paid' => $this->handleInvoicePaid($object, $paymentCompletionMailService),
+            'invoice.payment_succeeded' => $this->handleInvoicePaid($object, $paymentCompletionMailService),
+            'invoice_payment.paid' => $this->handleInvoicePaymentPaid($object, $paymentCompletionMailService),
             'customer.subscription.deleted' => $this->handleSubscriptionDeleted($object),
             default => Log::info('Unhandled Stripe webhook event.', ['type' => $type]),
         };
     }
 
-    private function handleCheckoutSessionCompleted(array $session): void
+    private function handleCheckoutSessionCompleted(array $session, PaymentCompletionMailService $paymentCompletionMailService): void
     {
         $payment = $this->paymentFromSession($session);
-        if (!$payment) {
+        if (! $payment) {
             return;
         }
 
@@ -53,27 +54,29 @@ class ProcessStripeWebhook implements ShouldQueue
 
         if (($session['payment_status'] ?? null) === 'paid') {
             $payment->markPaid($session['payment_intent'] ?? null);
+            $paymentCompletionMailService->sendPaidNotificationIfNeeded($payment, 'stripe_webhook_checkout_session_completed');
         }
 
         $payment->mergeMeta(['stripe' => ['checkout_session_completed' => $this->eventSummary()]]);
     }
 
-    private function handlePaymentIntentSucceeded(array $intent): void
+    private function handlePaymentIntentSucceeded(array $intent, PaymentCompletionMailService $paymentCompletionMailService): void
     {
         $payment = $this->paymentFromPaymentIntent($intent);
-        if (!$payment) {
+        if (! $payment) {
             return;
         }
 
         $payment->forceFill(['webhook_received_at' => now()])->save();
         $payment->markPaid($intent['id'] ?? null);
+        $paymentCompletionMailService->sendPaidNotificationIfNeeded($payment, 'stripe_webhook_payment_intent_succeeded');
         $payment->mergeMeta(['stripe' => ['payment_intent_succeeded' => $this->eventSummary()]]);
     }
 
     private function handlePaymentIntentFailed(array $intent): void
     {
         $payment = $this->paymentFromPaymentIntent($intent);
-        if (!$payment) {
+        if (! $payment) {
             return;
         }
 
@@ -92,7 +95,7 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         $invoiceId = $invoice['id'] ?? null;
-        if (!$invoiceId) {
+        if (! $invoiceId) {
             return;
         }
 
@@ -103,7 +106,7 @@ class ProcessStripeWebhook implements ShouldQueue
         }
 
         $sourcePayment = $this->paymentFromInvoice($invoice);
-        if (!$sourcePayment) {
+        if (! $sourcePayment) {
             Log::warning('Stripe invoice created webhook could not find source payment.', [
                 'invoice' => $invoiceId,
                 'subscription' => $this->subscriptionIdFromInvoice($invoice),
@@ -117,17 +120,17 @@ class ProcessStripeWebhook implements ShouldQueue
         $payment->mergeMeta(['stripe' => ['invoice_created' => $this->eventSummary()]]);
     }
 
-    private function handleInvoicePaid(array $invoice): void
+    private function handleInvoicePaid(array $invoice, PaymentCompletionMailService $paymentCompletionMailService): void
     {
         $invoiceId = $invoice['id'] ?? null;
         $paymentIntentId = $this->paymentIntentIdFromInvoice($invoice);
         $payment = $invoiceId ? Payment::where('stripe_invoice_id', $invoiceId)->first() : null;
 
-        if (!$payment) {
+        if (! $payment) {
             $payment = $this->paymentFromInvoice($invoice);
         }
 
-        if (!$payment) {
+        if (! $payment) {
             Log::warning('Stripe invoice paid webhook could not find payment.', [
                 'invoice' => $invoiceId,
                 'subscription' => $this->subscriptionIdFromInvoice($invoice),
@@ -154,10 +157,11 @@ class ProcessStripeWebhook implements ShouldQueue
             'webhook_received_at' => now(),
         ])->save();
         $payment->markPaid($paymentIntentId, $invoiceId);
+        $paymentCompletionMailService->sendPaidNotificationIfNeeded($payment, 'stripe_webhook_invoice_paid');
         $payment->mergeMeta(['stripe' => ['invoice_paid' => $this->eventSummary()]]);
     }
 
-    private function handleInvoicePaymentPaid(array $invoicePayment): void
+    private function handleInvoicePaymentPaid(array $invoicePayment, PaymentCompletionMailService $paymentCompletionMailService): void
     {
         $invoiceId = isset($invoicePayment['invoice']) && is_string($invoicePayment['invoice'])
             ? $invoicePayment['invoice']
@@ -166,14 +170,14 @@ class ProcessStripeWebhook implements ShouldQueue
 
         $payment = $invoiceId ? Payment::where('stripe_invoice_id', $invoiceId)->first() : null;
 
-        if (!$payment && $paymentIntentId) {
+        if (! $payment && $paymentIntentId) {
             $payment = Payment::where('stripe_payment_intent_id', $paymentIntentId)->first();
         }
 
-        if (!$payment) {
+        if (! $payment) {
             $invoice = $this->retrieveStripeInvoice($invoiceId);
             if ($invoice) {
-                $this->handleInvoicePaid($invoice);
+                $this->handleInvoicePaid($invoice, $paymentCompletionMailService);
                 return;
             }
 
@@ -190,16 +194,17 @@ class ProcessStripeWebhook implements ShouldQueue
             'webhook_received_at' => now(),
         ])->save();
         $payment->markPaid($paymentIntentId, $invoiceId);
+        $paymentCompletionMailService->sendPaidNotificationIfNeeded($payment, 'stripe_webhook_invoice_payment_paid');
         $payment->mergeMeta(['stripe' => ['invoice_payment_paid' => $this->eventSummary()]]);
     }
 
     private function handleSubscriptionDeleted(array $subscription): void
     {
         $payment = Payment::where('stripe_subscription_id', $subscription['id'] ?? null)->first();
-        if (!$payment && !empty($subscription['metadata']['payment_id'])) {
+        if (! $payment && ! empty($subscription['metadata']['payment_id'])) {
             $payment = Payment::find($subscription['metadata']['payment_id']);
         }
-        if (!$payment) {
+        if (! $payment) {
             Log::warning('Stripe subscription deleted webhook could not find payment.', ['subscription' => $subscription['id'] ?? null]);
             return;
         }
@@ -214,11 +219,11 @@ class ProcessStripeWebhook implements ShouldQueue
     private function paymentFromSession(array $session): ?Payment
     {
         $payment = Payment::where('stripe_checkout_session_id', $session['id'] ?? null)->first();
-        if (!$payment && !empty($session['metadata']['payment_id'])) {
+        if (! $payment && ! empty($session['metadata']['payment_id'])) {
             $payment = Payment::find($session['metadata']['payment_id']);
         }
 
-        if (!$payment) {
+        if (! $payment) {
             Log::warning('Stripe checkout webhook could not find payment.', ['session' => $session['id'] ?? null]);
         }
 
@@ -228,11 +233,11 @@ class ProcessStripeWebhook implements ShouldQueue
     private function paymentFromPaymentIntent(array $intent): ?Payment
     {
         $payment = Payment::where('stripe_payment_intent_id', $intent['id'] ?? null)->first();
-        if (!$payment && !empty($intent['metadata']['payment_id'])) {
+        if (! $payment && ! empty($intent['metadata']['payment_id'])) {
             $payment = Payment::find($intent['metadata']['payment_id']);
         }
 
-        if (!$payment) {
+        if (! $payment) {
             Log::warning('Stripe payment intent webhook could not find payment.', ['payment_intent' => $intent['id'] ?? null]);
         }
 
@@ -246,7 +251,7 @@ class ProcessStripeWebhook implements ShouldQueue
             ? Payment::where('stripe_subscription_id', $subscriptionId)->orderBy('id')->first()
             : null;
 
-        if (!$payment) {
+        if (! $payment) {
             $paymentId = $this->metadataValueFromInvoice($invoice, 'payment_id');
             $payment = $paymentId ? Payment::find($paymentId) : null;
         }
@@ -317,10 +322,10 @@ class ProcessStripeWebhook implements ShouldQueue
     private function amountFromInvoice(array $invoice, Payment $payment): float
     {
         $amount = $invoice['amount_paid'] ?? null;
-        if (!is_numeric($amount) || (float) $amount <= 0) {
+        if (! is_numeric($amount) || (float) $amount <= 0) {
             $amount = $invoice['amount_due'] ?? null;
         }
-        if (!is_numeric($amount)) {
+        if (! is_numeric($amount)) {
             return (float) $payment->amount;
         }
 
@@ -353,7 +358,7 @@ class ProcessStripeWebhook implements ShouldQueue
 
     private function retrieveStripeInvoice(?string $invoiceId): ?array
     {
-        if (!$invoiceId) {
+        if (! $invoiceId) {
             return null;
         }
 
