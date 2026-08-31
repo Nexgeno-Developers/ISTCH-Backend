@@ -1077,7 +1077,7 @@ if (!function_exists('page_details_from_ids')) {
 }
 
 if (!function_exists('post_category_details_from_ids')) {
-    function post_category_details_from_ids($ids, bool $returnSingleWhenOne = true)
+    function post_category_details_from_ids($ids, bool $returnSingleWhenOne = true, ?int $postsLimit = 3)
     {
         $ids = normalize_ids($ids);
 
@@ -1092,15 +1092,18 @@ if (!function_exists('post_category_details_from_ids')) {
 
         $companyId = config('custom.company_id');
 
-        $categoryPayloads = $categories->map(function (Category $category) use ($companyId) {
+        $categoryPayloads = $categories->map(function (Category $category) use ($companyId, $postsLimit) {
             $postsQuery = $category->posts()
                 ->where('is_active', true)
                 ->with('meta')
-                ->orderByDesc('published_at')
-                ->limit(3);
+                ->orderByDesc('published_at');
 
             if (!empty($companyId)) {
                 $postsQuery->where('company_id', $companyId);
+            }
+
+            if ($postsLimit !== null) {
+                $postsQuery->limit($postsLimit);
             }
 
             $posts = $postsQuery->get()->map(function (Post $post) {

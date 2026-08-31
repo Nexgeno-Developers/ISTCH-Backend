@@ -76,6 +76,11 @@ class PageController extends Controller
         'global_movements_post_categories',
     ];
 
+    private array $unlimitedPostCategoryMetaKeys = [
+        'hero_post_categories',
+        'upcoming_convocations_post_categories',
+    ];
+
     // Page reference keys
     private array $pageSectionMetaKeys = [
 
@@ -367,7 +372,9 @@ class PageController extends Controller
         }
 
         if (in_array($key, $this->post_category_MetaKeys)) {
-            return post_category_details_from_ids($value);
+            $postsLimit = in_array($key, $this->unlimitedPostCategoryMetaKeys, true) ? null : 3;
+
+            return post_category_details_from_ids($value, true, $postsLimit);
         }
 
         return $value;
