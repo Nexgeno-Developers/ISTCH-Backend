@@ -92,6 +92,11 @@ class ApiPayloadCache
         return self::basePrefix() . ':rev:robots_txt:' . $companyId;
     }
 
+    private static function redirectsRevisionKey(int $companyId): string
+    {
+        return self::basePrefix() . ':rev:redirects:' . $companyId;
+    }
+
     private static function getIntRevision(string $key): int
     {
         try {
@@ -215,6 +220,22 @@ class ApiPayloadCache
             . ':r:' . $localRev;
     }
 
+    private static function redirectsPayloadKey(int $companyId): string
+    {
+        $schemaVersion = 'sv1';
+        $localRev = self::getIntRevision(self::redirectsRevisionKey($companyId));
+        $globalRev = $companyId === 0
+            ? $localRev
+            : self::getIntRevision(self::redirectsRevisionKey(0));
+        $companyTag = $companyId <= 0 ? 'c0' : ('c' . $companyId);
+
+        return self::basePrefix()
+            . ':redirects:' . $companyTag
+            . ':' . $schemaVersion
+            . ':g:' . $globalRev
+            . ':r:' . $localRev;
+    }
+
     /**
      * @return array<string, mixed>|null  Cached payload, or null if missing / invalid / read error.
      */
@@ -248,6 +269,18 @@ class ApiPayloadCache
     public static function storeRobotsTxtPayload(int $companyId, array $payload): void
     {
         self::storePayloadArray(self::robotsTxtPayloadKey($companyId), $payload);
+    }
+
+    /** @return array<string, mixed>|null */
+    public static function getCachedRedirectsPayload(int $companyId): ?array
+    {
+        return self::getPayloadArray(self::redirectsPayloadKey($companyId));
+    }
+
+    /** @param array<string, mixed> $payload */
+    public static function storeRedirectsPayload(int $companyId, array $payload): void
+    {
+        self::storePayloadArray(self::redirectsPayloadKey($companyId), $payload);
     }
 
     /**
@@ -461,5 +494,10 @@ class ApiPayloadCache
     public static function invalidateRobotsTxt(int $companyId): void
     {
         self::incrementRevision(self::robotsTxtRevisionKey($companyId));
+    }
+
+    public static function invalidateRedirects(int $companyId): void
+    {
+        self::incrementRevision(self::redirectsRevisionKey($companyId));
     }
 }

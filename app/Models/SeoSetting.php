@@ -11,5 +11,10 @@ class SeoSetting extends Model
     protected $fillable = [
         'company_id',
         'content',
+        'redirects',
+    ];
+
+    protected $casts = [
+        'redirects' => 'array',
     ];
 }

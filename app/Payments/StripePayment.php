@@ -72,7 +72,6 @@ class StripePayment
 
         $params = [
             'mode' => $payment->payment_type === Payment::TYPE_MONTHLY ? 'subscription' : 'payment',
-            'payment_method_types' => ['card'],
             'customer_email' => $payment->email,
             'line_items' => [$lineItem],
             'success_url' => $successUrl,

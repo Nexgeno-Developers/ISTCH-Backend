@@ -24,6 +24,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\SeoMetaController;
 use App\Http\Controllers\Backend\SeoSettingController;
+use App\Http\Controllers\Backend\RedirectController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\HomeController;
 
@@ -181,5 +182,7 @@ Route::prefix('backend')->group(function () {
     Route::middleware('auth.backend')->group(function () {
         Route::get('seo-settings', [SeoSettingController::class, 'index'])->name('seo-settings.index');
         Route::post('seo-settings', [SeoSettingController::class, 'update'])->name('seo-settings.update');
+        Route::get('redirects', [RedirectController::class, 'index'])->name('redirects.index');
+        Route::post('redirects', [RedirectController::class, 'update'])->name('redirects.update');
     });
 });

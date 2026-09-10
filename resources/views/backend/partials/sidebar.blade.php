@@ -99,6 +99,12 @@
                 <span class="menu-text"> SEO Settings </span>
             </a>
         </li>
+        <li class="side-nav-item">
+            <a href="{{ route('redirects.index') }}" class="side-nav-link">
+                <span class="menu-icon"><i class="ti ti-arrows-right-left"></i></span>
+                <span class="menu-text"> Redirects </span>
+            </a>
+        </li>
         @endcan
         
         <li class="side-nav-item">

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\SeoSettingController;
+use App\Http\Controllers\Api\V1\RedirectController;
 use App\Http\Controllers\Api\V1\SitemapController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
 use App\Http\Controllers\Api\V1\TagController;
@@ -38,6 +39,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('sitemap', [SitemapController::class, 'index']);
     Route::get('robots-txt', [SeoSettingController::class, 'robotsTxt']);
+    Route::get('redirects', [RedirectController::class, 'index']);
 
     Route::get('payments/currencies', [PaymentController::class, 'currencies']);
     Route::post('donate', [PaymentController::class, 'donate'])->middleware('throttle:10,1')->name('donation.submit');

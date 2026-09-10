@@ -37,7 +37,7 @@ class PaymentController extends Controller
 
     public function donate(Request $request, CurrencyService $currencyService, StripePayment $stripePayment, PaymentCompletionMailService $paymentCompletionMailService): JsonResponse
     {
-        $activeCurrencyCodes = Currency::where('is_active', true)->pluck('code')->toArray();
+        $activeCurrencyCodes = $currencyService->activeCurrencies()->pluck('code')->all();
 
         $validator = Validator::make($request->all(), [
             'payment_type' => ['required', Rule::in([Payment::TYPE_ONE_TIME, Payment::TYPE_MONTHLY])],
@@ -58,9 +58,8 @@ class PaymentController extends Controller
 
         $validated = $validator->validated();
 
-        $currency = Currency::where('code', $validated['currency'])
-            ->where('is_active', true)
-            ->firstOrFail();
+        $currency = $currencyService->activeCurrencies()->firstWhere('code', $validated['currency']);
+        abort_unless($currency instanceof Currency, 422);
 
         $amount = round((float) $validated['amount'], 2);
         $minimum = $this->minimumAmount();
@@ -359,6 +358,5 @@ class PaymentController extends Controller
         ];
     }
 }
-
 
 
