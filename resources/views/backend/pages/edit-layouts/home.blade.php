@@ -15,7 +15,9 @@
     $banner_description = $metaValue('banner_description');
     $banner_video_url = $metaValue('banner_video_url');
     $banner_join_navigation = $metaValue('banner_join_navigation');
+    $banner_join_cta_label = $metaValue('banner_join_cta_label');
     $banner_learn_more_navigation = $metaValue('banner_learn_more_navigation');
+    $banner_learn_cta_label = $metaValue('banner_learn_cta_label');
 
     $highlights = $metaArray('highlights');
 
@@ -129,6 +131,16 @@
     <div class="col-md-12 form-group mb-2">
         <label class="form-label">Video URL</label>
         <input class="form-control" value="{{ $banner_video_url }}" name="meta[banner_video_url]" type="text" placeholder="Enter video URL">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Join Navigation Button Text</label>
+        <input class="form-control" value="{{ $banner_join_cta_label }}" name="meta[banner_join_cta_label]" type="text" placeholder="Enter button text">
+    </div>
+
+    <div class="col-md-6 form-group mb-2">
+        <label class="form-label">Learn More Navigation Button Text</label>
+        <input class="form-control" value="{{ $banner_learn_cta_label }}" name="meta[banner_learn_cta_label]" type="text" placeholder="Enter button text">
     </div>
 
     <div class="col-md-6 form-group mb-2">
